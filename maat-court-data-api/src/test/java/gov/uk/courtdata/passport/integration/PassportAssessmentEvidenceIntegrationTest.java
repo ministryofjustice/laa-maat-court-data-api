@@ -80,8 +80,7 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType")
                         .value(IncomeEvidenceType.getFrom(applicantEvidenceEntity.getIncomeEvidence())
                                 .getName()))
-                .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory")
-                        .value(applicantEvidenceEntity.getMandatory().equals("Y")))
+                .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(true))
                 .andExpect(jsonPath("$.applicantEvidenceItems[0].description")
                         .value(applicantEvidenceEntity.getOtherText()))
                 .andExpect(jsonPath("$.partnerEvidenceItems[0].id").value(partnerEvidenceEntity.getId()))
@@ -93,8 +92,7 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.partnerEvidenceItems[0].evidenceType")
                         .value(IncomeEvidenceType.getFrom(partnerEvidenceEntity.getIncomeEvidence())
                                 .getName()))
-                .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory")
-                        .value(partnerEvidenceEntity.getMandatory().equals("Y")))
+                .andExpect(jsonPath("$.partnerEvidenceItems[0].mandatory").value(true))
                 .andExpect(
                         jsonPath("$.partnerEvidenceItems[0].description").value(partnerEvidenceEntity.getOtherText()));
     }
@@ -196,8 +194,7 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$.applicantEvidenceItems[0].evidenceType")
                         .value(IncomeEvidenceType.getFrom(applicantEvidenceEntity.getIncomeEvidence())
                                 .getName()))
-                .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory")
-                        .value(applicantEvidenceEntity.getMandatory().equals("Y")))
+                .andExpect(jsonPath("$.applicantEvidenceItems[0].mandatory").value(true))
                 .andExpect(jsonPath("$.applicantEvidenceItems[0].description")
                         .value(applicantEvidenceEntity.getOtherText()))
                 .andExpect(jsonPath("$.partnerEvidenceItems").isEmpty());

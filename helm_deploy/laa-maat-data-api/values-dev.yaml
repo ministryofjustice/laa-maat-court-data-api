@@ -86,7 +86,7 @@ actuator:
     failureThreshold: 5
 
 logging:
-  level: DEBUG
+  level: INFO
 
 cloudPlatform:
   aws:

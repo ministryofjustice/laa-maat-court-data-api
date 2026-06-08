@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,10 +20,8 @@ import static uk.gov.justice.laa.crime.error.ProblemDetailError.VALIDATION_FAILU
 
 import gov.uk.MAATCourtDataApplication;
 import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
-import gov.uk.courtdata.assessment.mapper.PassportAssessmentMapper;
 import gov.uk.courtdata.builder.TestEntityDataBuilder;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
-import gov.uk.courtdata.dto.PassportAssessmentDTO;
 import gov.uk.courtdata.entity.Applicant;
 import gov.uk.courtdata.entity.FinancialAssessmentEntity;
 import gov.uk.courtdata.entity.HardshipReviewEntity;
@@ -32,8 +29,6 @@ import gov.uk.courtdata.entity.NewWorkReasonEntity;
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
 import gov.uk.courtdata.integration.util.MockMvcIntegrationTest;
-import gov.uk.courtdata.model.assessment.CreatePassportAssessment;
-import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import gov.uk.courtdata.repository.HardshipReviewRepository;
 import gov.uk.courtdata.repository.PassportAssessmentRepository;
@@ -51,12 +46,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
@@ -70,16 +63,9 @@ import com.jayway.jsonpath.JsonPath;
 @SpringBootTest(classes = {MAATCourtDataApplication.class})
 class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest {
 
-    private static final String BASE_URL = "/api/internal/v1/assessment/passport-assessments";
     private static final String BASE_V2_URL = "/api/internal/v2/assessment/passport-assessments";
-    private static final String ASSESSMENT_URL = BASE_URL + "/{passportAssessmentId}";
-    private static final String ASSESSMENT_BY_REP_ID_URL = BASE_URL + "/repId/{repId}";
-    private static final Integer INVALID_ASSESSMENT_ID = 999;
     private static final String LEGACY_APPLICATION_ID_FIELD = "passportedAssessmentMetadata.legacyApplicationId";
     private static final String LEGACY_PARTNER_ID_FIELD = "passportedAssessment.declaredBenefit.legacyPartnerId";
-
-    @Autowired
-    private PassportAssessmentMapper passportAssessmentMapper;
 
     @MockitoSpyBean
     private gov.uk.courtdata.passport.mapper.PassportAssessmentMapper passportMapperV2;
@@ -124,7 +110,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .assessmentDate(testCreationDate)
                 .userCreated(testUser)
                 .pastStatus("IN PROGRESS")
-                .replaced(NO)
+                .replaced(false)
                 .build());
 
         completePassportAssessmentEntity = repos.passportAssessment.save(PassportAssessmentEntity.builder()
@@ -133,7 +119,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .result(PASS.getCode())
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .userCreated(testUser)
-                .replaced(NO)
+                .replaced(false)
                 .pastStatus("COMPLETE")
                 .build());
 
@@ -150,49 +136,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         hardshipReview.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
 
         repos.hardshipReview.save(hardshipReview);
-    }
-
-    @Test
-    void givenAZeroAssessmentId_whenGetAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        assertThat(runBadRequestErrorScenario("Passport Assessment Id is required", get(ASSESSMENT_URL, 0)))
-                .isTrue();
-    }
-
-    @Test
-    void givenAnInvalidAssessmentId_whenGetAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        assertThat(runBadRequestErrorScenario(
-                        String.format("%d is invalid", INVALID_ASSESSMENT_ID),
-                        get(ASSESSMENT_URL, INVALID_ASSESSMENT_ID)))
-                .isTrue();
-    }
-
-    @Test
-    void givenAValidAssessmentId_whenGetAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        assertThat(runSuccessScenario(
-                        passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(
-                                existingPassportAssessmentEntity),
-                        get(ASSESSMENT_URL, existingPassportAssessmentEntity.getId())))
-                .isTrue();
-    }
-
-    @Test
-    void givenAnInvalidRepId_whenGetAssessmentByRepIdV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        Integer invalidRepId = 0;
-        assertThat(runNotFoundErrorScenario(
-                        String.format("No Passport Assessment found for REP ID: %s", invalidRepId),
-                        get(ASSESSMENT_BY_REP_ID_URL, invalidRepId)))
-                .isTrue();
-    }
-
-    @Test
-    void givenAValidRepId_whenGetAssessmentByRepIdV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        assertThat(runSuccessScenario(
-                        passportAssessmentMapper.passportAssessmentEntityToPassportAssessmentDTO(
-                                existingPassportAssessmentEntity),
-                        get(
-                                ASSESSMENT_BY_REP_ID_URL,
-                                existingPassportAssessmentEntity.getRepOrder().getId())))
-                .isTrue();
     }
 
     @Test
@@ -221,123 +164,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .andExpect(status().is(404))
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("No Passported Assessment found for ID: 0"));
-    }
-
-    @Test
-    void givenAMissingRepId_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
-                "Rep Order ID is required", CreatePassportAssessment.builder().build());
-    }
-
-    @Test
-    void givenAMissingCmuId_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
-                "Case Management Unit (CMU) ID is required",
-                CreatePassportAssessment.builder().repId(1).build());
-    }
-
-    @Test
-    void givenAMissingNewWorkReasonCode_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        runCreatePassportAssessmentErrorScenario(
-                "New Work Reason (NWOR) code is required",
-                CreatePassportAssessment.builder().repId(1).cmuId(2).build());
-    }
-
-    @Test
-    void givenAMissingPastStatus_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
-                "Past Status is required",
-                CreatePassportAssessment.builder()
-                        .repId(1)
-                        .cmuId(2)
-                        .nworCode("FMA")
-                        .build());
-    }
-
-    @Test
-    void givenAMissingUserCreated_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runCreatePassportAssessmentErrorScenario(
-                "Username is required",
-                CreatePassportAssessment.builder()
-                        .repId(1)
-                        .cmuId(2)
-                        .nworCode("FMA")
-                        .pastStatus("test")
-                        .build());
-    }
-
-    @Test
-    void givenAMissingFinancialAssessmentId_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        runCreatePassportAssessmentErrorScenario(
-                "Financial Assessment ID is required",
-                CreatePassportAssessment.builder()
-                        .repId(1)
-                        .cmuId(2)
-                        .nworCode("FMA")
-                        .pastStatus("test")
-                        .userCreated("test")
-                        .build());
-    }
-
-    @Test
-    void givenAValidPassportAssessmentBody_whenCreateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
-        CreatePassportAssessment body = TestModelDataBuilder.getCreatePassportAssessment();
-        body.setRepId(repId);
-        body.setFinancialAssessmentId(existingFinancialAssessmentEntity.getId());
-
-        PassportAssessmentDTO expectedResponse = TestModelDataBuilder.getPassportAssessmentDTO();
-        expectedResponse.setRepId(repId);
-        expectedResponse.setUserModified(null);
-
-        MvcResult result = runSuccessScenario(
-                post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-
-        // Check existing financial assessment are marked as replaced.
-        long updatedFinancialAssessmentsCount = repos.financialAssessment.findAll().stream()
-                .filter(assessment -> assessment.getRepOrder().getId().equals(repId)
-                        && assessment.getReplaced().equals(YES))
-                .count();
-
-        assertThat(updatedFinancialAssessmentsCount).isEqualTo(1L);
-
-        // Check that existing hardship reviews are marked as replaced.
-        long updatedHardshipReviewCount = repos.hardshipReview.findAll().stream()
-                .filter(review ->
-                        review.getRepId().equals(repId) && review.getReplaced().equals(YES))
-                .count();
-
-        assertThat(updatedHardshipReviewCount).isEqualTo(1L);
-
-        // Check that there are now 2 passport assessments for the given repId.
-        // One current and the other marked as replaced.
-        List<PassportAssessmentEntity> matchingPassportAssessments = repos.passportAssessment.findAll().stream()
-                .filter(assessment -> assessment.getRepOrder().getId().equals(repId))
-                .toList();
-
-        assertThat(matchingPassportAssessments).hasSize(2);
-
-        List<PassportAssessmentEntity> newPassportAssessments = matchingPassportAssessments.stream()
-                .filter(assessment -> assessment.getReplaced().equals(NO))
-                .toList();
-
-        assertThat(newPassportAssessments).hasSize(1);
-
-        PassportAssessmentEntity createdPassportAssessment = newPassportAssessments.getFirst();
-
-        expectedResponse.setId(createdPassportAssessment.getId());
-        expectedResponse.setDateCreated(createdPassportAssessment.getDateCreated());
-        expectedResponse.setDateModified(createdPassportAssessment.getDateModified());
-
-        // Check the contents of the created passport assessment in the DB.
-        assertPassportAssessmentsEqual(expectedResponse, createdPassportAssessment);
-
-        // Check the contents of the returned passport assessment.
-        assertThat(objectMapper.writeValueAsString(expectedResponse))
-                .isEqualTo(result.getResponse().getContentAsString());
     }
 
     /**
@@ -403,14 +229,14 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         // check we've set all old passported assessments to replaced.
         assertThat(passportAssessments.stream()
-                        .filter(a -> YES.equals(a.getReplaced()))
+                        .filter(a -> Boolean.TRUE.equals(a.getReplaced()))
                         .map(PassportAssessmentEntity::getId)
                         .toList())
                 .hasSize(1)
                 .doesNotContain(createdPassportedAssessmentId);
         // check the id is correct and saved and not replaced.
         assertThat(passportAssessments.stream()
-                        .filter(x -> NO.equals(x.getReplaced()))
+                        .filter(x -> Boolean.FALSE.equals(x.getReplaced()))
                         .map(PassportAssessmentEntity::getId)
                         .toList())
                 .hasSize(1)
@@ -622,12 +448,12 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
         // check we've set not set any old passported assessments to replaced.
         assertThat(passportAssessments.stream()
-                        .filter(x -> YES.equals(x.getReplaced()))
+                        .filter(x -> Boolean.TRUE.equals(x.getReplaced()))
                         .map(PassportAssessmentEntity::getId))
                 .isEmpty();
         // check there is still only one value. The other should have been rolled back.
         assertThat(passportAssessments.stream()
-                        .filter(x -> NO.equals(x.getReplaced()))
+                        .filter(x -> Boolean.FALSE.equals(x.getReplaced()))
                         .map(PassportAssessmentEntity::getId)
                         .toList())
                 .hasSize(1);
@@ -658,211 +484,5 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         // validate mapper is being called.
         verify(passportMapperV2).toPassportAssessmentEntity(any());
         verify(passportMapperV2, never()).toApiCreatePassportedAssessmentResponse(any());
-    }
-
-    @Test
-    void givenAMissingRepId_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
-                "Rep Order ID is required", UpdatePassportAssessment.builder().build());
-    }
-
-    @Test
-    void givenAMissingCmuId_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
-                "Case Management Unit (CMU) ID is required",
-                UpdatePassportAssessment.builder().repId(1).build());
-    }
-
-    @Test
-    void givenAMissingNewWorkReasonCode_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        runUpdatePassportAssessmentErrorScenario(
-                "New Work Reason (NWOR) code is required",
-                UpdatePassportAssessment.builder().repId(1).cmuId(2).build());
-    }
-
-    @Test
-    void givenAMissingPastStatus_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        UpdatePassportAssessment assessment = UpdatePassportAssessment.builder()
-                .repId(1)
-                .cmuId(2)
-                .nworCode("FMA")
-                .build();
-
-        runUpdatePassportAssessmentErrorScenario("Past Status is required", assessment);
-    }
-
-    @Test
-    void givenAMissingUserModified_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned() throws Exception {
-        UpdatePassportAssessment assessment = UpdatePassportAssessment.builder()
-                .repId(1)
-                .cmuId(2)
-                .nworCode("FMA")
-                .pastStatus("test")
-                .id(existingPassportAssessmentEntity.getId())
-                .build();
-
-        runUpdatePassportAssessmentErrorScenario("Username is required", assessment);
-    }
-
-    @Test
-    void givenAMissingPassportAssessmentId_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        UpdatePassportAssessment assessment = UpdatePassportAssessment.builder()
-                .repId(1)
-                .cmuId(2)
-                .nworCode("FMA")
-                .pastStatus("test")
-                .build();
-
-        runUpdatePassportAssessmentErrorScenario("Passport Assessment Id is required", assessment);
-    }
-
-    @Test
-    void givenAPassportAssessmentIdThatDoesNotExist_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        UpdatePassportAssessment assessment = UpdatePassportAssessment.builder()
-                .repId(1)
-                .cmuId(2)
-                .nworCode("FMA")
-                .pastStatus("test")
-                .id(INVALID_ASSESSMENT_ID)
-                .build();
-
-        runUpdatePassportAssessmentErrorScenario(String.format("%d is invalid", INVALID_ASSESSMENT_ID), assessment);
-    }
-
-    @Test
-    void givenAZeroPassportAssessmentId_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        UpdatePassportAssessment assessment = UpdatePassportAssessment.builder()
-                .repId(1)
-                .cmuId(2)
-                .nworCode("FMA")
-                .pastStatus("test")
-                .id(0)
-                .build();
-
-        runUpdatePassportAssessmentErrorScenario("Passport Assessment Id is required", assessment);
-    }
-
-    @Test
-    void givenACompleteAssessmentToUpdate_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        UpdatePassportAssessment body = TestModelDataBuilder.getUpdatePassportAssessment();
-        body.setRepId(completePassportAssessmentEntity.getRepOrder().getId());
-        body.setId(completePassportAssessmentEntity.getId());
-
-        runUpdatePassportAssessmentErrorScenario("User cannot modify a completed assessment", body);
-    }
-
-    @Test
-    @Disabled("This test will fail until LCAM-89 is fixed.")
-    void givenAValidPassportAssessmentBody_whenUpdateAssessmentV1IsInvoked_theCorrectResponseIsReturned()
-            throws Exception {
-        Integer id = existingPassportAssessmentEntity.getId();
-        Integer repId = existingPassportAssessmentEntity.getRepOrder().getId();
-        UpdatePassportAssessment body = TestModelDataBuilder.getUpdatePassportAssessment();
-        body.setRepId(repId);
-        body.setId(id);
-
-        PassportAssessmentDTO expectedResponse = TestModelDataBuilder.getPassportAssessmentDTO();
-        expectedResponse.setId(id);
-        expectedResponse.setRepId(repId);
-        expectedResponse.setDateCreated(existingPassportAssessmentEntity.getDateCreated());
-        expectedResponse.setUsn(null);
-        expectedResponse.setValid(null);
-        expectedResponse.setRtCode(null);
-
-        MvcResult result = runSuccessScenario(
-                put(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)));
-        repos.passportAssessment.flush();
-        List<PassportAssessmentEntity> matchingPassportAssessments = repos.passportAssessment.findAll().stream()
-                .filter(assessment -> assessment.getRepOrder().getId().equals(repId))
-                .toList();
-
-        assertThat(matchingPassportAssessments).hasSize(1);
-
-        PassportAssessmentEntity updatedPassportAssessment = matchingPassportAssessments.getFirst();
-
-        expectedResponse.setDateModified(updatedPassportAssessment.getDateModified());
-
-        // Check the contents of the created passport assessment in the DB.
-        assertPassportAssessmentsEqual(expectedResponse, updatedPassportAssessment);
-
-        // Check the contents of the returned passport assessment.
-        assertThat(objectMapper.writeValueAsString(expectedResponse))
-                .isEqualTo(result.getResponse().getContentAsString());
-    }
-
-    private void assertPassportAssessmentsEqual(
-            PassportAssessmentDTO expectedPassportAssessment, PassportAssessmentEntity passportAssessmentEntity) {
-        assertThat(passportAssessmentEntity.getId()).isEqualTo(expectedPassportAssessment.getId());
-        assertThat(passportAssessmentEntity.getRepOrder().getId()).isEqualTo(expectedPassportAssessment.getRepId());
-        assertThat(passportAssessmentEntity.getCmuId()).isEqualTo(expectedPassportAssessment.getCmuId());
-        assertThat(passportAssessmentEntity.getNworCode()).isEqualTo(expectedPassportAssessment.getNworCode());
-        assertThat(passportAssessmentEntity.getPastStatus()).isEqualTo(expectedPassportAssessment.getPastStatus());
-        assertThat(passportAssessmentEntity.getUserCreated()).isEqualTo(expectedPassportAssessment.getUserCreated());
-        assertThat(passportAssessmentEntity.getDateCreated()).isEqualTo(expectedPassportAssessment.getDateCreated());
-        assertThat(passportAssessmentEntity.getAssessmentDate())
-                .isEqualTo(expectedPassportAssessment.getAssessmentDate());
-        assertThat(passportAssessmentEntity.getDwpResult()).isEqualTo(expectedPassportAssessment.getDwpResult());
-        assertThat(passportAssessmentEntity.getEsa()).isEqualTo(expectedPassportAssessment.getEsa());
-        assertThat(passportAssessmentEntity.getIncomeSupport())
-                .isEqualTo(expectedPassportAssessment.getIncomeSupport());
-        assertThat(passportAssessmentEntity.getJobSeekers()).isEqualTo(expectedPassportAssessment.getJobSeekers());
-        assertThat(passportAssessmentEntity.getResult()).isEqualTo(expectedPassportAssessment.getResult());
-        assertThat(passportAssessmentEntity.getPartnerFirstName())
-                .isEqualTo(expectedPassportAssessment.getPartnerFirstName());
-        assertThat(passportAssessmentEntity.getPartnerSurname())
-                .isEqualTo(expectedPassportAssessment.getPartnerSurname());
-        assertThat(passportAssessmentEntity.getPartnerNiNumber())
-                .isEqualTo(expectedPassportAssessment.getPartnerNiNumber());
-        assertThat(passportAssessmentEntity.getPartnerBenefitClaimed())
-                .isEqualTo(expectedPassportAssessment.getPartnerBenefitClaimed());
-        assertThat(passportAssessmentEntity.getPartnerDob()).isEqualTo(expectedPassportAssessment.getPartnerDob());
-        assertThat(passportAssessmentEntity.getStatePensionCredit())
-                .isEqualTo(expectedPassportAssessment.getStatePensionCredit());
-        assertThat(passportAssessmentEntity.getUnder16()).isEqualTo(expectedPassportAssessment.getUnder16());
-        assertThat(passportAssessmentEntity.getUnder18FullEducation())
-                .isEqualTo(expectedPassportAssessment.getUnder18FullEducation());
-        assertThat(passportAssessmentEntity.getPcobConfirmation())
-                .isEqualTo(expectedPassportAssessment.getPcobConfirmation());
-        assertThat(passportAssessmentEntity.getDwpResult()).isEqualTo(expectedPassportAssessment.getDwpResult());
-        assertThat(passportAssessmentEntity.getBetween16And17())
-                .isEqualTo(expectedPassportAssessment.getBetween16And17());
-        assertThat(passportAssessmentEntity.getUnder18HeardInYouthCourt())
-                .isEqualTo(expectedPassportAssessment.getUnder18HeardInYouthCourt());
-        assertThat(passportAssessmentEntity.getUnder18HeardInMagsCourt())
-                .isEqualTo(expectedPassportAssessment.getUnder18HeardInMagsCourt());
-        assertThat(passportAssessmentEntity.getLastSignOnDate())
-                .isEqualTo(expectedPassportAssessment.getLastSignOnDate());
-        assertThat(passportAssessmentEntity.getDateCompleted())
-                .isEqualTo(expectedPassportAssessment.getDateCompleted());
-        assertThat(passportAssessmentEntity.getUsn()).isEqualTo(expectedPassportAssessment.getUsn());
-        assertThat(passportAssessmentEntity.getValid()).isEqualTo(expectedPassportAssessment.getValid());
-        assertThat(passportAssessmentEntity.getRtCode()).isEqualTo(expectedPassportAssessment.getRtCode());
-        assertThat(passportAssessmentEntity.getWhoDWPChecked())
-                .isEqualTo(expectedPassportAssessment.getWhoDWPChecked());
-    }
-
-    private void runCreatePassportAssessmentErrorScenario(String errorMessage, CreatePassportAssessment body)
-            throws Exception {
-        assertThat(runBadRequestErrorScenario(
-                        errorMessage,
-                        post(BASE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(body))))
-                .isTrue();
-    }
-
-    private void runUpdatePassportAssessmentErrorScenario(String errorMessage, UpdatePassportAssessment body)
-            throws Exception {
-        assertThat(runBadRequestErrorScenario(
-                        errorMessage,
-                        put(BASE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(body))))
-                .isTrue();
     }
 }

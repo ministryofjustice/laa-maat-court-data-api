@@ -1,7 +1,5 @@
 package gov.uk.courtdata.passport.mapper;
 
-import static gov.uk.courtdata.constants.CourtDataConstants.NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL;
 import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL_BYPASS;
@@ -47,14 +45,14 @@ public class PassportAssessmentMapperHelper {
     }
 
     @Named("mapPartnerBenefitClaimed")
-    public String mapPartnerBenefitClaimed(DeclaredBenefit declaredBenefit) {
-        return (declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient()) ? YES : NO);
+    public Boolean mapPartnerBenefitClaimed(DeclaredBenefit declaredBenefit) {
+        return declaredBenefit != null && PARTNER.equals(declaredBenefit.getBenefitRecipient());
     }
 
     @Named("under18Mapper")
     public boolean mapUnder18(PassportAssessmentEntity passportAssessmentEntity) {
-        return YES.equals(passportAssessmentEntity.getUnder18HeardInYouthCourt())
-                || YES.equals(passportAssessmentEntity.getUnder18HeardInMagsCourt());
+        return Boolean.TRUE.equals(passportAssessmentEntity.getUnder18HeardInYouthCourt())
+                || Boolean.TRUE.equals(passportAssessmentEntity.getUnder18HeardInMagsCourt());
     }
 
     @Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)
@@ -111,21 +109,16 @@ public class PassportAssessmentMapperHelper {
         return null;
     }
 
-    BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
-        if (passportAssessmentEntity.getIncomeSupport() != null
-                && passportAssessmentEntity.getIncomeSupport().equals(YES)) {
+    public BenefitType mapBenefitType(PassportAssessmentEntity passportAssessmentEntity) {
+        if (Boolean.TRUE.equals(passportAssessmentEntity.getIncomeSupport())) {
             return BenefitType.INCOME_SUPPORT;
-        } else if (passportAssessmentEntity.getJobSeekers() != null
-                && passportAssessmentEntity.getJobSeekers().equals(YES)) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getJobSeekers())) {
             return BenefitType.JSA;
-        } else if (passportAssessmentEntity.getEsa() != null
-                && passportAssessmentEntity.getEsa().equals(YES)) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getEsa())) {
             return BenefitType.ESA;
-        } else if (passportAssessmentEntity.getStatePensionCredit() != null
-                && passportAssessmentEntity.getStatePensionCredit().equals(YES)) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getStatePensionCredit())) {
             return BenefitType.GSPC;
-        } else if (passportAssessmentEntity.getUniversalCredit() != null
-                && passportAssessmentEntity.getUniversalCredit().equals(YES)) {
+        } else if (Boolean.TRUE.equals(passportAssessmentEntity.getUniversalCredit())) {
             return BenefitType.UC;
         }
 
@@ -137,20 +130,14 @@ public class PassportAssessmentMapperHelper {
         return dateReceived != null ? dateReceived.toLocalDate() : null;
     }
 
-    @Named("mapEvidenceMandatory")
-    public boolean mapEvidenceMandatory(String mandatory) {
-        return "Y".equals(mandatory);
-    }
-
     @Named("mapEvidenceType")
     public IncomeEvidenceType mapEvidenceType(String evidenceType) {
         return IncomeEvidenceType.getFrom(evidenceType);
     }
 
     BenefitRecipient mapBenefitRecipient(PassportAssessmentEntity passportAssessmentEntity) {
-        return passportAssessmentEntity.getPartnerBenefitClaimed() != null
-                        && passportAssessmentEntity.getPartnerBenefitClaimed().equals(YES)
-                ? PARTNER
+        return Boolean.TRUE.equals(passportAssessmentEntity.getPartnerBenefitClaimed())
+                ? BenefitRecipient.PARTNER
                 : BenefitRecipient.APPLICANT;
     }
 }

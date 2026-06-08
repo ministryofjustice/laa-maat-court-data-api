@@ -1,15 +1,12 @@
 package gov.uk.courtdata.passport.mapper;
 
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.REP_ID;
-import static gov.uk.courtdata.constants.CourtDataConstants.NO;
-import static gov.uk.courtdata.constants.CourtDataConstants.YES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Named.named;
 import static org.mockito.Mockito.when;
 
 import gov.uk.courtdata.applicant.dto.RepOrderApplicantLinksDTO;
-import gov.uk.courtdata.applicant.entity.RepOrderApplicantLinksEntity;
 import gov.uk.courtdata.applicant.mapper.RepOrderApplicantLinksMapper;
 import gov.uk.courtdata.applicant.repository.RepOrderApplicantLinksRepository;
 import gov.uk.courtdata.applicant.service.ApplicantService;
@@ -64,30 +61,22 @@ class PassportAssessmentMapperTest {
     @Autowired
     private PassportAssessmentMapper passportAssessmentMapper;
 
-    private RepOrderApplicantLinksDTO getRepOrderApplicantLinksDto(
-            PassportAssessmentEntity passportAssessmentEntity,
-            RepOrderApplicantLinksEntity repOrderApplicantLinksEntity,
-            LocalDate unlinkDate) {
-        return RepOrderApplicantLinksDTO.builder()
-                .repId(passportAssessmentEntity.getRepOrder().getId())
-                .partnerApplId(repOrderApplicantLinksEntity.getPartnerApplId())
-                .unlinkDate(unlinkDate)
-                .linkDate(LocalDate.now())
-                .build();
-    }
-
     @Test
     void givenPassportAssessmentEntity_whenMapToApiGetPassportedAssessmentResponse_thenAllFieldsMapped() {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        entity.setIncomeSupport(YES);
+        entity.setIncomeSupport(true);
         entity.setJobSeekers(null);
         entity.setEsa(null);
         entity.setStatePensionCredit(null);
         // This is how we get the partner ID
         var applicantLinksEntity = TestEntityDataBuilder.getRepOrderApplicantLinksEntity();
 
-        RepOrderApplicantLinksDTO repOrderApplicantLinksDto =
-                getRepOrderApplicantLinksDto(entity, applicantLinksEntity, null);
+        RepOrderApplicantLinksDTO repOrderApplicantLinksDto = RepOrderApplicantLinksDTO.builder()
+                .repId(entity.getRepOrder().getId())
+                .partnerApplId(applicantLinksEntity.getPartnerApplId())
+                .unlinkDate(null)
+                .linkDate(LocalDate.now())
+                .build();
 
         when(repOrderApplicantLinksMapper.mapEntityToDTO(List.of(applicantLinksEntity)))
                 .thenReturn(List.of(repOrderApplicantLinksDto));
@@ -117,7 +106,7 @@ class PassportAssessmentMapperTest {
     void
             givenPassportAssessmentEntityForUnder18_whenMapToApiGetPassportedAssessmentResponse_thenDeclaredBenefitIsNotMapped() {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
-        entity.setUnder18HeardInMagsCourt(YES);
+        entity.setUnder18HeardInMagsCourt(true);
 
         var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity, null);
 
@@ -127,41 +116,21 @@ class PassportAssessmentMapperTest {
     }
 
     private static Stream<Arguments> declaredUnder18TestData() {
+        // heardInYouthCourt, heardInMagsCourt, expectedUnder18Declaration
         return Stream.of(
-                Arguments.of(
-                        named("heardInYouthCourt", YES),
-                        named("heardInMagsCourt", YES),
-                        named("expectedUnder18Declaration", true)),
-                Arguments.of(
-                        named("heardInYouthCourt", YES),
-                        named("heardInMagsCourt", null),
-                        named("expectedUnder18Declaration", true)),
-                Arguments.of(
-                        named("heardInYouthCourt", YES),
-                        named("heardInMagsCourt", NO),
-                        named("expectedUnder18Declaration", true)),
-                Arguments.of(
-                        named("heardInYouthCourt", null),
-                        named("heardInMagsCourt", YES),
-                        named("expectedUnder18Declaration", true)),
-                Arguments.of(
-                        named("heardInYouthCourt", NO),
-                        named("heardInMagsCourt", YES),
-                        named("expectedUnder18Declaration", true)),
-                Arguments.of(
-                        named("heardInYouthCourt", null),
-                        named("heardInMagsCourt", null),
-                        named("expectedUnder18Declaration", false)),
-                Arguments.of(
-                        named("heardInYouthCourt", NO),
-                        named("heardInMagsCourt", NO),
-                        named("expectedUnder18Declaration", false)));
+                Arguments.of(true, true, true),
+                Arguments.of(true, null, true),
+                Arguments.of(true, false, true),
+                Arguments.of(null, true, true),
+                Arguments.of(false, true, true),
+                Arguments.of(null, null, false),
+                Arguments.of(false, false, false));
     }
 
     @ParameterizedTest
     @MethodSource("declaredUnder18TestData")
     void givenHeardInYouthCourtAndHeardInMagsCourt_whenMapUnder18Called_thenUnder18IsMapped(
-            String heardInYouthCourt, String heardInMagsCourt, Boolean expectedUnder18Declaration) {
+            Boolean heardInYouthCourt, Boolean heardInMagsCourt, Boolean expectedUnder18Declaration) {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setUnder18HeardInYouthCourt(heardInYouthCourt);
         entity.setUnder18HeardInMagsCourt(heardInMagsCourt);
@@ -172,52 +141,23 @@ class PassportAssessmentMapperTest {
     }
 
     private static Stream<Arguments> benefitTypeTestData() {
+        // incomeSupport, jobSeekers, esa, pensionCredit, universalCredit, expectedBenefit
         return Stream.of(
-                Arguments.of(
-                        named("incomeSupport", YES),
-                        named("jobSeekers", null),
-                        named("esa", null),
-                        named("pensionCredit", null),
-                        named("universalCredit", null),
-                        named("expectedBenefit", BenefitType.INCOME_SUPPORT)),
-                Arguments.of(
-                        named("incomeSupport", null),
-                        named("jobSeekers", YES),
-                        named("esa", null),
-                        named("pensionCredit", null),
-                        named("universalCredit", null),
-                        named("expectedBenefit", BenefitType.JSA)),
-                Arguments.of(
-                        named("incomeSupport", null),
-                        named("jobSeekers", null),
-                        named("esa", YES),
-                        named("pensionCredit", null),
-                        named("universalCredit", null),
-                        named("expectedBenefit", BenefitType.ESA)),
-                Arguments.of(
-                        named("incomeSupport", null),
-                        named("jobSeekers", null),
-                        named("esa", null),
-                        named("pensionCredit", YES),
-                        named("universalCredit", null),
-                        named("expectedBenefit", BenefitType.GSPC)),
-                Arguments.of(
-                        named("incomeSupport", null),
-                        named("jobSeekers", null),
-                        named("esa", null),
-                        named("pensionCredit", null),
-                        named("universalCredit", YES),
-                        named("expectedBenefit", BenefitType.UC)));
+                Arguments.of(true, null, null, null, null, BenefitType.INCOME_SUPPORT),
+                Arguments.of(null, true, null, null, null, BenefitType.JSA),
+                Arguments.of(null, null, true, null, null, BenefitType.ESA),
+                Arguments.of(null, null, null, true, null, BenefitType.GSPC),
+                Arguments.of(null, null, null, null, true, BenefitType.UC));
     }
 
     @ParameterizedTest
     @MethodSource("benefitTypeTestData")
     void givenABenefit_whenMapBenefitTypeCalled_thenBenefitTypeIsMapped(
-            String incomeSupport,
-            String jobSeekers,
-            String esa,
-            String pensionCredit,
-            String universalCredit,
+            Boolean incomeSupport,
+            Boolean jobSeekers,
+            Boolean esa,
+            Boolean pensionCredit,
+            Boolean universalCredit,
             BenefitType expectedBenefit) {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setIncomeSupport(incomeSupport);
@@ -232,19 +172,17 @@ class PassportAssessmentMapperTest {
     }
 
     private static Stream<Arguments> benefitRecipientTestData() {
+        // partnerBenefitClaimed, expectedRecipient
         return Stream.of(
-                Arguments.of(
-                        named("partnerBenefitClaimed", null), named("expectedRecipient", BenefitRecipient.APPLICANT)),
-                Arguments.of(
-                        named("partnerBenefitClaimed", NO), named("expectedRecipient", BenefitRecipient.APPLICANT)),
-                Arguments.of(
-                        named("partnerBenefitClaimed", YES), named("expectedRecipient", BenefitRecipient.PARTNER)));
+                Arguments.of(null, BenefitRecipient.APPLICANT),
+                Arguments.of(false, BenefitRecipient.APPLICANT),
+                Arguments.of(true, BenefitRecipient.PARTNER));
     }
 
     @ParameterizedTest
     @MethodSource("benefitRecipientTestData")
     void givenPartnerBenefitClaimed_whenMapBenefitRecipientCalled_thenBenefitRecipientIsMapped(
-            String partnerBenefitClaimed, BenefitRecipient expectedRecipient) {
+            Boolean partnerBenefitClaimed, BenefitRecipient expectedRecipient) {
         var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setPartnerBenefitClaimed(partnerBenefitClaimed);
 
@@ -340,7 +278,7 @@ class PassportAssessmentMapperTest {
         BenefitType expectedBenefit =
                 request.getPassportedAssessment().getDeclaredBenefit().getBenefitType();
         validateBenefitTypeMapping(expectedBenefit, entity);
-        assertThat(entity.getPartnerBenefitClaimed()).isEqualTo(NO);
+        assertThat(entity.getPartnerBenefitClaimed()).isFalse();
     }
 
     @Test
@@ -355,17 +293,18 @@ class PassportAssessmentMapperTest {
 
         validatePassportedAssessmentV2UnconditionalMappings(request, entity);
         validateBenefitTypeMapping(null, entity);
-        assertThat(entity.getPartnerBenefitClaimed()).isEqualTo(NO);
+        assertThat(entity.getPartnerBenefitClaimed()).isFalse();
     }
 
     private static Stream<Arguments> benefitMapperTestData() {
-        return Stream.of(Arguments.of(BenefitRecipient.PARTNER, YES), Arguments.of(BenefitRecipient.APPLICANT, NO));
+        // benefitRecipient, partnerBenefitClaimed
+        return Stream.of(Arguments.of(BenefitRecipient.PARTNER, true), Arguments.of(BenefitRecipient.APPLICANT, false));
     }
 
     @MethodSource(value = "benefitMapperTestData")
     @ParameterizedTest
     void givenSpecificBenefitRecipient_whenMapPartnerBenefitClaimedCalled_thenPartnerBenefitIsMappedCorrectly(
-            BenefitRecipient benefitRecipient, String expectedOutput) {
+            BenefitRecipient benefitRecipient, Boolean expectedOutput) {
         DeclaredBenefit declaredBenefit = TestModelDataBuilder.buildDeclaredBenefit(benefitRecipient);
 
         assertThat(passportAssessmentMapperHelper.mapPartnerBenefitClaimed(declaredBenefit))
@@ -375,7 +314,7 @@ class PassportAssessmentMapperTest {
     @MethodSource(value = "benefitMapperTestData")
     @ParameterizedTest
     void givenCreateRequestWithSpecificBenefitRecipient_whenMapToEntityCalled_thenPartnerBenefitIsMappedCorrectly(
-            BenefitRecipient benefitRecipient, String expectedOutput) {
+            BenefitRecipient benefitRecipient, Boolean expectedOutput) {
         var repOrder = TestEntityDataBuilder.getPopulatedRepOrder(REP_ID);
         Integer partnerId = TestEntityDataBuilder.APPLICANT_ID;
 
@@ -411,7 +350,7 @@ class PassportAssessmentMapperTest {
 
         // check case specific mappings.
         validateBenefitTypeMapping(null, entity);
-        assertThat(entity.getPartnerBenefitClaimed()).isEqualTo(NO);
+        assertThat(entity.getPartnerBenefitClaimed()).isFalse();
     }
 
     @ParameterizedTest
@@ -419,7 +358,7 @@ class PassportAssessmentMapperTest {
     void givenSpecificBenefit_whenMapBenefitIsCalled_thenCorrectBenefitIsMapped(BenefitType benefitType) {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(false);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(benefitType);
-        String result;
+        Boolean result;
         // loop through all benefit types and check that it returns "Y" for the correct one, otherwise "N".
         for (BenefitType currentBenefitType : BenefitType.values()) {
             result = passportAssessmentMapper.mapBenefitType(currentBenefitType, request);
@@ -476,6 +415,10 @@ class PassportAssessmentMapperTest {
                 .isEqualTo(request.getPassportedAssessment()
                         .getAssessmentDecision()
                         .getCode());
+        assertThat(entity.getUserCreated())
+                .isEqualTo(request.getPassportedAssessmentMetadata()
+                        .getUserSession()
+                        .getUserName());
         // TODO: LCAM-2073 - Under 18 court asserts.
         //
         // assertThat(entity.getUnder18HeardInMagsCourt()).isEqualTo(request.getPassportedAssessment().getDecisionReason().getConfirmation());
@@ -491,7 +434,7 @@ class PassportAssessmentMapperTest {
         assertThat(entity.getUniversalCredit()).isEqualTo(isBenefitType(expectedBenefit, BenefitType.UC));
     }
 
-    private String isBenefitType(BenefitType actualType, BenefitType expected) {
-        return expected.equals(actualType) ? YES : NO;
+    private Boolean isBenefitType(BenefitType actualType, BenefitType expected) {
+        return expected.equals(actualType);
     }
 }

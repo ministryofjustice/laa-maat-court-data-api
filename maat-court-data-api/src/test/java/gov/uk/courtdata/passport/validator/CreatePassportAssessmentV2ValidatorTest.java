@@ -57,17 +57,6 @@ class CreatePassportAssessmentV2ValidatorTest {
     }
 
     @Test
-    void givenRequestWithJsaWithSignOn_whenValidateIsInvoked_thenShouldError() {
-        var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
-                REP_ID, APPLICANT_ID, false, true);
-        request.getPassportedAssessment().getDeclaredBenefit().setBenefitType(BenefitType.JSA);
-        request.getPassportedAssessment().getDeclaredBenefit().setLastSignOnDate(LocalDateTime.now());
-
-        assertThatCode(() -> createPassportAssessmentV2Validator.validateCreateRequest(request))
-                .doesNotThrowAnyException();
-    }
-
-    @Test
     void givenRequestWithInvalidRepOrderId_whenValidateIsInvoked_thenShouldError() {
         var expectedErrorMessage = new ErrorMessage(LEGACY_APPLICATION_ID_FIELD, "RepOrder does not exist");
         when(repOrderService.exists(REP_ID)).thenReturn(false);

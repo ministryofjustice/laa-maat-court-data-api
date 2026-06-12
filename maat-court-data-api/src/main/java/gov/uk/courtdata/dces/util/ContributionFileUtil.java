@@ -123,13 +123,13 @@ public class ContributionFileUtil {
                 case RECORDS_RECEIVED -> ps.setInt(parameterIndex++, contributionFilesEntity.getRecordsReceived());
                 case USER_CREATED -> ps.setString(parameterIndex++, contributionFilesEntity.getUserCreated());
                 case DATE_CREATED ->
-                        ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateCreated()));
+                    ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateCreated()));
                 case USER_MODIFIED -> ps.setString(parameterIndex++, contributionFilesEntity.getUserModified());
                 case DATE_MODIFIED ->
-                        ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateModified()));
+                    ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateModified()));
                 case DATE_SENT -> ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateSent()));
                 case DATE_RECEIVED ->
-                        ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateReceived()));
+                    ps.setDate(parameterIndex++, Date.valueOf(contributionFilesEntity.getDateReceived()));
 
                 case XML_CONTENT -> {
                     xmlContent.setString(1, contributionFilesEntity.getXmlContent());

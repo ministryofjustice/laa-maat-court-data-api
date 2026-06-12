@@ -7,11 +7,24 @@ import gov.uk.courtdata.repository.WQDefendantRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class WQDefendantProcessor {
+
+    private static final int TELEPHONE_HOME_MAX_LENGTH = 20;
+    private static final int TELEPHONE_WORK_MAX_LENGTH = 25;
+    private static final int TELEPHONE_MOBILE_MAX_LENGTH = 20;
+
+    private static final int MIN_TELEPHONE_DIGITS = 7;
+
+    private static final Pattern TELEPHONE_CANDIDATE_PATTERN = Pattern.compile("\\+?\\s*[0-9][0-9\\s().-]*");
+
+    private static final Pattern NON_DIGIT_PATTERN = Pattern.compile("[^0-9]");
 
     private final WQDefendantRepository defendantRepository;
 
@@ -32,13 +45,36 @@ public class WQDefendantProcessor {
                 .addressLine5(defendantDTO.getAddressLine5())
                 .postCode(defendantDTO.getPostcode())
                 .nino(defendantDTO.getNino())
-                .telephoneHome(defendantDTO.getTelephoneHome())
-                .telephoneWork(defendantDTO.getTelephoneWork())
-                .telephoneMobile(defendantDTO.getTelephoneMobile())
+                .telephoneHome(telephoneNumberOnly(defendantDTO.getTelephoneHome(), TELEPHONE_HOME_MAX_LENGTH))
+                .telephoneWork(telephoneNumberOnly(defendantDTO.getTelephoneWork(), TELEPHONE_WORK_MAX_LENGTH))
+                .telephoneMobile(telephoneNumberOnly(defendantDTO.getTelephoneMobile(), TELEPHONE_MOBILE_MAX_LENGTH))
                 .email1(defendantDTO.getEmail1())
                 .email2(defendantDTO.getEmail2())
                 .build();
 
         defendantRepository.save(defendantEntity);
+    }
+
+    private static String telephoneNumberOnly(final String rawTelephoneNumber, final int maxLength) {
+        if (rawTelephoneNumber == null || rawTelephoneNumber.isBlank()) {
+            return null;
+        }
+
+        Matcher matcher = TELEPHONE_CANDIDATE_PATTERN.matcher(rawTelephoneNumber.trim());
+
+        while (matcher.find()) {
+            String candidate = matcher.group();
+            String digitsOnly = NON_DIGIT_PATTERN.matcher(candidate).replaceAll("");
+
+            if (digitsOnly.length() < MIN_TELEPHONE_DIGITS) {
+                continue;
+            }
+
+            String telephoneNumber = candidate.trim().startsWith("+") ? "+" + digitsOnly : digitsOnly;
+
+            return telephoneNumber.length() <= maxLength ? telephoneNumber : null;
+        }
+
+        return null;
     }
 }

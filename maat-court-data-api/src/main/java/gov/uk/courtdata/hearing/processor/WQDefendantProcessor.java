@@ -22,9 +22,17 @@ public class WQDefendantProcessor {
 
     private static final int MIN_TELEPHONE_DIGITS = 7;
 
-    private static final Pattern TELEPHONE_CANDIDATE_PATTERN = Pattern.compile("\\+?\\s*[0-9][0-9\\s().-]*");
+    /**
+     * optional + with optional spaces after it
+     * then a digit
+     * then zero or more groups of:
+     *     optional separators/spaces
+     *     another digit
+     */
+    private static final Pattern TELEPHONE_CANDIDATE_PATTERN = Pattern.compile("(?:\\+\\s*+)?+\\d(?:[\\s().-]*+\\d)*+");
 
-    private static final Pattern NON_DIGIT_PATTERN = Pattern.compile("[^0-9]");
+    // \\D is a non-digit character, so this pattern matches sequences of non-digit characters
+    private static final Pattern NON_DIGIT_PATTERN = Pattern.compile("\\D++");
 
     private final WQDefendantRepository defendantRepository;
 
@@ -70,7 +78,7 @@ public class WQDefendantProcessor {
                 continue;
             }
 
-            String telephoneNumber = candidate.trim().startsWith("+") ? "+" + digitsOnly : digitsOnly;
+            String telephoneNumber = candidate.startsWith("+") ? "+" + digitsOnly : digitsOnly;
 
             return telephoneNumber.length() <= maxLength ? telephoneNumber : null;
         }

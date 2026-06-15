@@ -56,11 +56,20 @@ public class WQDefendantProcessor {
                 .postCode(defendantDTO.getPostcode())
                 .nino(defendantDTO.getNino())
                 .telephoneHome(telephoneNumberOnly(
-                        defendantDTO.getTelephoneHome(), TELEPHONE_HOME_MAX_LENGTH, "telephoneHome"))
+                        defendantDTO.getTelephoneHome(),
+                        TELEPHONE_HOME_MAX_LENGTH,
+                        "telephoneHome",
+                        magsCourtDTO.getCaseId()))
                 .telephoneWork(telephoneNumberOnly(
-                        defendantDTO.getTelephoneWork(), TELEPHONE_WORK_MAX_LENGTH, "telephoneWork"))
+                        defendantDTO.getTelephoneWork(),
+                        TELEPHONE_WORK_MAX_LENGTH,
+                        "telephoneWork",
+                        magsCourtDTO.getCaseId()))
                 .telephoneMobile(telephoneNumberOnly(
-                        defendantDTO.getTelephoneMobile(), TELEPHONE_MOBILE_MAX_LENGTH, "telephoneMobile"))
+                        defendantDTO.getTelephoneMobile(),
+                        TELEPHONE_MOBILE_MAX_LENGTH,
+                        "telephoneMobile",
+                        magsCourtDTO.getCaseId()))
                 .email1(defendantDTO.getEmail1())
                 .email2(defendantDTO.getEmail2())
                 .build();
@@ -69,7 +78,10 @@ public class WQDefendantProcessor {
     }
 
     private static String telephoneNumberOnly(
-            final String rawTelephoneNumber, final int maxLength, final String telephoneFieldName) {
+            final String rawTelephoneNumber,
+            final int maxLength,
+            final String telephoneFieldName,
+            final Integer caseId) {
 
         if (rawTelephoneNumber == null || rawTelephoneNumber.isBlank()) {
             return null;
@@ -91,7 +103,7 @@ public class WQDefendantProcessor {
                 continue;
             }
 
-            logTelephoneNumberAltered(telephoneFieldName, rawTelephoneNumber, telephoneNumber);
+            logTelephoneNumberAltered(telephoneFieldName, rawTelephoneNumber, telephoneNumber, caseId);
 
             return telephoneNumber;
         }
@@ -100,15 +112,19 @@ public class WQDefendantProcessor {
     }
 
     private static void logTelephoneNumberAltered(
-            final String telephoneFieldName, final String originalTelephoneNumber, final String savedTelephoneNumber) {
+            final String telephoneFieldName,
+            final String originalTelephoneNumber,
+            final String savedTelephoneNumber,
+            final Integer caseId) {
 
         if (originalTelephoneNumber.equals(savedTelephoneNumber) || !log.isInfoEnabled()) {
             return;
         }
 
         log.info(
-                "Telephone number altered while processing {}. originalMasked={}, savedMasked={}, originalLength={}, savedLength={}",
+                "Telephone number altered while processing {} for caseId {}. originalMasked={}, savedMasked={}, originalLength={}, savedLength={}",
                 telephoneFieldName,
+                caseId,
                 maskTelephoneNumber(originalTelephoneNumber),
                 maskTelephoneNumber(savedTelephoneNumber),
                 originalTelephoneNumber.length(),

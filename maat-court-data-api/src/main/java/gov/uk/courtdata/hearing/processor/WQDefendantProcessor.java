@@ -92,20 +92,12 @@ public class WQDefendantProcessor {
         while (matcher.find()) {
             String candidate = matcher.group();
             String digitsOnly = NON_DIGIT_PATTERN.matcher(candidate).replaceAll("");
-
-            if (digitsOnly.length() < MIN_TELEPHONE_DIGITS) {
-                continue;
-            }
-
             String telephoneNumber = candidate.startsWith("+") ? "+" + digitsOnly : digitsOnly;
 
-            if (telephoneNumber.length() > maxLength) {
-                continue;
+            if (digitsOnly.length() >= MIN_TELEPHONE_DIGITS && telephoneNumber.length() <= maxLength) {
+                logTelephoneNumberAltered(telephoneFieldName, rawTelephoneNumber, telephoneNumber, caseId);
+                return telephoneNumber;
             }
-
-            logTelephoneNumberAltered(telephoneFieldName, rawTelephoneNumber, telephoneNumber, caseId);
-
-            return telephoneNumber;
         }
 
         return null;
@@ -117,27 +109,14 @@ public class WQDefendantProcessor {
             final String savedTelephoneNumber,
             final Integer caseId) {
 
-        if (originalTelephoneNumber.equals(savedTelephoneNumber) || !log.isInfoEnabled()) {
+        if (originalTelephoneNumber.equals(savedTelephoneNumber)) {
             return;
         }
 
         log.info(
-                "Telephone number altered while processing {} for caseId {}. originalMasked={}, savedMasked={}, originalLength={}, savedLength={}",
+                "Telephone number altered while processing {} for caseId {}.",
                 telephoneFieldName,
-                caseId,
-                maskTelephoneNumber(originalTelephoneNumber),
-                maskTelephoneNumber(savedTelephoneNumber),
-                originalTelephoneNumber.length(),
-                savedTelephoneNumber.length());
+                caseId);
     }
 
-    private static String maskTelephoneNumber(final String telephoneNumber) {
-        String digitsOnly = NON_DIGIT_PATTERN.matcher(telephoneNumber).replaceAll("");
-
-        if (digitsOnly.length() <= 4) {
-            return "****";
-        }
-
-        return "*".repeat(digitsOnly.length() - 4) + digitsOnly.substring(digitsOnly.length() - 4);
-    }
 }

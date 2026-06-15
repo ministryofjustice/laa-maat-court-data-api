@@ -6,12 +6,14 @@ import gov.uk.courtdata.hearing.dto.HearingDTO;
 import gov.uk.courtdata.repository.WQDefendantRepository;
 import gov.uk.courtdata.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class WQDefendantProcessor {
@@ -53,9 +55,12 @@ public class WQDefendantProcessor {
                 .addressLine5(defendantDTO.getAddressLine5())
                 .postCode(defendantDTO.getPostcode())
                 .nino(defendantDTO.getNino())
-                .telephoneHome(telephoneNumberOnly(defendantDTO.getTelephoneHome(), TELEPHONE_HOME_MAX_LENGTH))
-                .telephoneWork(telephoneNumberOnly(defendantDTO.getTelephoneWork(), TELEPHONE_WORK_MAX_LENGTH))
-                .telephoneMobile(telephoneNumberOnly(defendantDTO.getTelephoneMobile(), TELEPHONE_MOBILE_MAX_LENGTH))
+                .telephoneHome(telephoneNumberOnly(
+                        defendantDTO.getTelephoneHome(), TELEPHONE_HOME_MAX_LENGTH, "telephoneHome"))
+                .telephoneWork(telephoneNumberOnly(
+                        defendantDTO.getTelephoneWork(), TELEPHONE_WORK_MAX_LENGTH, "telephoneWork"))
+                .telephoneMobile(telephoneNumberOnly(
+                        defendantDTO.getTelephoneMobile(), TELEPHONE_MOBILE_MAX_LENGTH, "telephoneMobile"))
                 .email1(defendantDTO.getEmail1())
                 .email2(defendantDTO.getEmail2())
                 .build();
@@ -63,7 +68,9 @@ public class WQDefendantProcessor {
         defendantRepository.save(defendantEntity);
     }
 
-    private static String telephoneNumberOnly(final String rawTelephoneNumber, final int maxLength) {
+    private static String telephoneNumberOnly(
+            final String rawTelephoneNumber, final int maxLength, final String telephoneFieldName) {
+
         if (rawTelephoneNumber == null || rawTelephoneNumber.isBlank()) {
             return null;
         }
@@ -80,9 +87,41 @@ public class WQDefendantProcessor {
 
             String telephoneNumber = candidate.startsWith("+") ? "+" + digitsOnly : digitsOnly;
 
-            return telephoneNumber.length() <= maxLength ? telephoneNumber : null;
+            if (telephoneNumber.length() > maxLength) {
+                continue;
+            }
+
+            logTelephoneNumberAltered(telephoneFieldName, rawTelephoneNumber, telephoneNumber);
+
+            return telephoneNumber;
         }
 
         return null;
+    }
+
+    private static void logTelephoneNumberAltered(
+            final String telephoneFieldName, final String originalTelephoneNumber, final String savedTelephoneNumber) {
+
+        if (originalTelephoneNumber.equals(savedTelephoneNumber) || !log.isInfoEnabled()) {
+            return;
+        }
+
+        log.info(
+                "Telephone number altered while processing {}. originalMasked={}, savedMasked={}, originalLength={}, savedLength={}",
+                telephoneFieldName,
+                maskTelephoneNumber(originalTelephoneNumber),
+                maskTelephoneNumber(savedTelephoneNumber),
+                originalTelephoneNumber.length(),
+                savedTelephoneNumber.length());
+    }
+
+    private static String maskTelephoneNumber(final String telephoneNumber) {
+        String digitsOnly = NON_DIGIT_PATTERN.matcher(telephoneNumber).replaceAll("");
+
+        if (digitsOnly.length() <= 4) {
+            return "****";
+        }
+
+        return "*".repeat(digitsOnly.length() - 4) + digitsOnly.substring(digitsOnly.length() - 4);
     }
 }

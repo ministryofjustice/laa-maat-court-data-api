@@ -164,6 +164,22 @@ class WQDefendantProcessorTest {
                 arguments("+ 44 7700 900123", "+447700900123"),
                 arguments("Call mum on 07700 900123 after 6pm", "07700900123"),
                 arguments("after 6pm call 07700 900123", "07700900123"),
+
+                // Exactly MIN_TELEPHONE_DIGITS
+                arguments("1234567", "1234567"),
+
+                // Skips the first candidate because it has only 6 digits,
+                // then returns the first valid match.
+                arguments("123456 Call 07700 900123", "07700900123"),
+
+                // Recovers from a malformed international number by matching from the second +
+                arguments("++44 7700 900123", "+447700900123"),
+
+                // Newline is treated as whitespace and stripped during normalisation
+                arguments("07700 900123\n", "07700900123"),
+
+                // Brackets inside the number are treated as separators
+                arguments("07700(900)123", "07700900123"),
                 arguments("mum's mobile", null),
                 arguments("after 6pm", null),
                 arguments("123456", null),

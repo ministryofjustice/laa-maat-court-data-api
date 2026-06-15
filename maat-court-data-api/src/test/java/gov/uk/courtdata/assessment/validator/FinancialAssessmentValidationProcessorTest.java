@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.uk.courtdata.assessment.service.OutstandingAssessmentService;
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.ValidationException;
 import gov.uk.courtdata.model.assessment.CreateFinancialAssessment;
@@ -23,14 +24,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class FinancialAssessmentValidationProcessorTest {
 
-    @InjectMocks
-    private FinancialAssessmentValidationProcessor financialAssessmentValidationProcessor;
-
     @Mock
     private CreateAssessmentValidator createAssessmentValidator;
 
     @Mock
     private FinancialAssessmentIdValidator financialAssessmentIdValidator;
+
+    @Mock
+    private OutstandingAssessmentService outstandingAssessmentService;
+
+    @InjectMocks
+    private FinancialAssessmentValidationProcessor financialAssessmentValidationProcessor;
 
     @Test
     void testFinancialAssessmentValidationProcessor_whenIdIsPassed_thenCallsIdValidator() {

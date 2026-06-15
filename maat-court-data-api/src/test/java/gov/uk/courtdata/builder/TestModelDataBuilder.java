@@ -68,6 +68,7 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.model.assessment.UpdatePassportAssessment;
 import gov.uk.courtdata.model.authorization.UserReservation;
 import gov.uk.courtdata.model.authorization.UserSession;
+import gov.uk.courtdata.model.hardship.CreateHardshipReview;
 import gov.uk.courtdata.model.hardship.HardshipReviewDetail;
 import gov.uk.courtdata.model.hardship.HardshipReviewProgress;
 import gov.uk.courtdata.model.hardship.SolicitorCosts;
@@ -948,6 +949,50 @@ public class TestModelDataBuilder {
         }
 
         return json + "}";
+    }
+
+    public static CreateHardshipReview createHardshipReview(
+            Integer financialAssessmentId, Integer repOrderId, String newWorkReason, Integer cmuId) {
+        return CreateHardshipReview.builder()
+                .financialAssessmentId(financialAssessmentId)
+                .repId(repOrderId)
+                .nworCode(newWorkReason)
+                .cmuId(cmuId)
+                .reviewResult("FAIL")
+                .reviewDate(LocalDateTime.now())
+                .resultDate(LocalDateTime.now())
+                .solicitorCosts(SolicitorCosts.builder()
+                        .rate(DataBuilderUtil.createScaledBigDecimal(1.23))
+                        .hours(DataBuilderUtil.createScaledBigDecimal(12.00))
+                        .vat(DataBuilderUtil.createScaledBigDecimal(123.45))
+                        .disbursements(DataBuilderUtil.createScaledBigDecimal(0.00))
+                        .estimatedTotal(DataBuilderUtil.createScaledBigDecimal(345.67))
+                        .build())
+                .disposableIncome(DataBuilderUtil.createScaledBigDecimal(13000.00))
+                .disposableIncomeAfterHardship(DataBuilderUtil.createScaledBigDecimal(3000.00))
+                .status(HardshipReviewStatus.COMPLETE)
+                .userCreated(TEST_USER)
+                .courtType("MAGISTRATE")
+                .reviewDetails(List.of(getTestHardshipReviewDetail(null, null, getTestHardshipReviewDetailReason())))
+                .build();
+    }
+
+    private static HardshipReviewDetail getTestHardshipReviewDetail(
+            Integer id, LocalDateTime dateModified, HardshipReviewDetailReason detailReason) {
+        HardshipReviewDetail reviewDetail = TestModelDataBuilder.getHardshipReviewDetail();
+
+        reviewDetail.setId(id);
+        reviewDetail.setDateModified(dateModified);
+
+        if (detailReason != null) {
+            reviewDetail.setDetailReason(detailReason);
+        }
+
+        return reviewDetail;
+    }
+
+    private static HardshipReviewDetailReason getTestHardshipReviewDetailReason() {
+        return HardshipReviewDetailReason.ALLOWABLE_EXPENSE;
     }
 
     public static String getUpdateHardshipReviewJson(boolean withRelationships) {

@@ -13,6 +13,7 @@ import gov.uk.courtdata.model.assessment.UpdateFinancialAssessment;
 import gov.uk.courtdata.repository.FinancialAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.error.ErrorMessage;
 
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,7 @@ public class FinancialAssessmentService {
     private final FinancialAssessmentMapper assessmentMapper;
     private final FinancialAssessmentRepository financialAssessmentRepository;
     private final AssessmentReplacementService assessmentReplacementService;
+    private final OutstandingAssessmentService outstandingAssessmentService;
 
     @Transactional(readOnly = true)
     public FinancialAssessmentDTO find(int financialAssessmentId) {
@@ -65,8 +67,18 @@ public class FinancialAssessmentService {
         return assessmentMapper.financialAssessmentEntityToFinancialAssessmentDTO(assessmentEntity);
     }
 
-    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(final Integer repId) {
-        return financialAssessmentImpl.checkForOutstandingAssessments(repId);
+    /**
+     * Check that the associated rep order does not have any in-progress financial/passported/hardship assessments.
+     * @deprecated Will be removed once the associated calling services have been refactored.
+     * @param repId RepId of the rep order to be checked.
+     * @return OutstandingAssessmentResultDTO containing the first error encountered, or empty if none found.
+     */
+    @Deprecated()
+    public OutstandingAssessmentResultDTO checkForOutstandingAssessments(Integer repId) {
+        Optional<ErrorMessage> errorMessage = outstandingAssessmentService.checkForOutstandingAssessments(repId);
+        return errorMessage
+                .map(message -> new OutstandingAssessmentResultDTO(true, message.message()))
+                .orElseGet(OutstandingAssessmentResultDTO::new);
     }
 
     @Transactional(readOnly = true)

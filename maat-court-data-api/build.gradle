@@ -9,6 +9,9 @@ plugins {
     id "com.diffplug.spotless" version "$spotlessVersion"
 }
 
+// springboot tomcat version overide, can be removed when springboot is 3.5.15 or 4+
+ext['tomcat.version'] = '10.1.55'
+
 group = "gov.uk"
 description = "This is a Facade application to the existing LAA legacy Applications MAAT/MLRA."
 

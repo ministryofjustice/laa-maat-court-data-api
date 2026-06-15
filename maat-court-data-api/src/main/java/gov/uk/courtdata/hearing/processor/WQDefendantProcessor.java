@@ -113,10 +113,6 @@ public class WQDefendantProcessor {
             return;
         }
 
-        log.info(
-                "Telephone number altered while processing {} for caseId {}.",
-                telephoneFieldName,
-                caseId);
+        log.info("Telephone number altered while processing {} for caseId {}.", telephoneFieldName, caseId);
     }
-
 }

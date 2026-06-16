@@ -3,6 +3,7 @@ package gov.uk.courtdata.integration.assessment;
 import static gov.uk.courtdata.builder.TestEntityDataBuilder.APPLICANT_ID;
 import static gov.uk.courtdata.constants.CourtDataConstants.NO;
 import static gov.uk.courtdata.constants.CourtDataConstants.YES;
+import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.COMPLETE;
 import static gov.uk.courtdata.dto.application.AssessmentStatusDTO.INCOMPLETE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -87,7 +88,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
 
     private PassportAssessmentEntity existingPassportAssessmentEntity;
     private FinancialAssessmentEntity existingFinancialAssessmentEntity;
-    private PassportAssessmentEntity completePassportAssessmentEntity;
     private HardshipReviewEntity hardshipReviewEntity;
 
     @BeforeEach
@@ -102,8 +102,6 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
         RepOrderEntity noOutstandingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
         Integer repIdWithNoOutstandingAssessments = noOutstandingRepOrder.getId();
 
-        RepOrderEntity completedRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder());
-
         NewWorkReasonEntity existingNewWorkReason =
                 repos.mockNewWorkReason.save(TestEntityDataBuilder.getFmaNewWorkReasonEntity());
 
@@ -113,18 +111,8 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .pcobConfirmation(APPLICANT_AGE.getConfirmation())
                 .assessmentDate(testCreationDate)
                 .userCreated(testUser)
-                .pastStatus(INCOMPLETE)
+                .pastStatus(COMPLETE)
                 .replaced(false)
-                .build());
-
-        completePassportAssessmentEntity = repos.passportAssessment.save(PassportAssessmentEntity.builder()
-                .repOrder(completedRepOrder)
-                .assessmentDate(testCreationDate)
-                .result(PASS.getCode())
-                .pcobConfirmation(APPLICANT_AGE.getConfirmation())
-                .userCreated(testUser)
-                .replaced(false)
-                .pastStatus("COMPLETE")
                 .build());
 
         FinancialAssessmentEntity testFinancialAssessment = TestEntityDataBuilder.getFinancialAssessmentEntity();
@@ -169,7 +157,7 @@ class PassportAssessmentControllerIntegrationTest extends MockMvcIntegrationTest
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("No Passported Assessment found for ID: 0"));
     }
-    
+
     /**
      * Simple 3 boolean truth table
      */

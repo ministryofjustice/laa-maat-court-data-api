@@ -109,7 +109,7 @@ public class WQDefendantProcessor {
             final String savedTelephoneNumber,
             final Integer caseId) {
 
-        if (originalTelephoneNumber.equals(savedTelephoneNumber)) {
+        if (originalTelephoneNumber.trim().equals(savedTelephoneNumber)) {
             return;
         }
 

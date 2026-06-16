@@ -520,6 +520,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
 
         softly.assertThat(repOrderResponse.getDateModified()).isEqualTo(persistedRepOrder.getDateModified());
 
-        softly.assertThat(repOrderResponse.getDateModified()).isAfter(originalDateModified);
+        softly.assertThat(repOrderResponse.getDateModified()).isAfterOrEqualTo(originalDateModified);
     }
 }

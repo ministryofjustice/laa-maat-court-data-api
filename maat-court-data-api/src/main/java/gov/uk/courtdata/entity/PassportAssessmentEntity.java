@@ -71,7 +71,7 @@ public class PassportAssessmentEntity {
     private LocalDateTime assessmentDate;
 
     @Column(name = "PARTNER_BENEFIT_CLAIMED")
-    private String partnerBenefitClaimed;
+    private Boolean partnerBenefitClaimed;
 
     @Column(name = "PARTNER_FIRST_NAME")
     private String partnerFirstName;
@@ -89,22 +89,22 @@ public class PassportAssessmentEntity {
     private LocalDateTime partnerDob;
 
     @Column(name = "INCOME_SUPPORT")
-    private String incomeSupport;
+    private Boolean incomeSupport;
 
     @Column(name = "UNIVERSAL_CREDIT")
-    private String universalCredit;
+    private Boolean universalCredit;
 
     @Column(name = "JOB_SEEKERS")
-    private String jobSeekers;
+    private Boolean jobSeekers;
 
     @Column(name = "STATE_PENSION_CREDIT")
-    private String statePensionCredit;
+    private Boolean statePensionCredit;
 
     @Column(name = "UNDER_18_FULL_EDUCATION")
-    private String under18FullEducation;
+    private Boolean under18FullEducation;
 
     @Column(name = "UNDER_16")
-    private String under16;
+    private Boolean under16;
 
     @Column(name = "PCOB_CONFIRMATION")
     private String pcobConfirmation;
@@ -126,26 +126,26 @@ public class PassportAssessmentEntity {
     private String passportNote;
 
     @Column(name = "BETWEEN_16_17")
-    private String between16And17;
+    private Boolean between16And17;
 
     @Column(name = "UNDER_18_HEARD_YOUTH_COURT")
-    private String under18HeardInYouthCourt;
+    private Boolean under18HeardInYouthCourt;
 
     @Column(name = "UNDER_18_HEARD_MAGS_COURT")
-    private String under18HeardInMagsCourt;
+    private Boolean under18HeardInMagsCourt;
 
     @Column(name = "LAST_SIGN_ON_DATE")
     private LocalDateTime lastSignOnDate;
 
     @Column(name = "ESA")
-    private String esa;
+    private Boolean esa;
 
     @Column(name = "PAST_STATUS")
     private String pastStatus;
 
     @Builder.Default
     @Column(name = "REPLACED")
-    private String replaced = "N";
+    private Boolean replaced = false;
 
     @Column(name = "PASSPORT_EVIDENCE_DUE_DATE")
     private LocalDateTime passportEvidenceDueDate;
@@ -172,7 +172,7 @@ public class PassportAssessmentEntity {
     private LocalDateTime secondPassportReminderDate;
 
     @Column(name = "VALID")
-    private String valid;
+    private Boolean valid;
 
     @Column(name = "DATE_COMPLETED")
     private LocalDateTime dateCompleted;

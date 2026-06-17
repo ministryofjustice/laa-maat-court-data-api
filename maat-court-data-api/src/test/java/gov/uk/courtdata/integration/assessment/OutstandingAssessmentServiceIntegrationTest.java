@@ -47,12 +47,17 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
         var existingRepOrder = repos.repOrder.save(TestEntityDataBuilder.getPopulatedRepOrder(null));
         saveTestFullMeansAssessment(existingRepOrder, NO, YES, IN_PROGRESS);
         saveTestHardshipAssessment(existingRepOrder, NO, YES, IN_PROGRESS);
-        saveTestPassportedAssessment(existingRepOrder, NO, YES, IN_PROGRESS);
+        saveTestPassportedAssessment(existingRepOrder, false, true, IN_PROGRESS);
     }
 
     // replaced / valid / status
     private static Stream<Arguments> outstandingAssessmentData() {
         return Stream.of(Arguments.of(NO, YES, IN_PROGRESS), Arguments.of(NO, null, IN_PROGRESS));
+    }
+
+    // replaced / valid / status
+    private static Stream<Arguments> outstandingPassportAssessmentData() {
+        return Stream.of(Arguments.of(false, true, IN_PROGRESS), Arguments.of(false, null, IN_PROGRESS));
     }
 
     @ParameterizedTest
@@ -82,9 +87,9 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     }
 
     @ParameterizedTest
-    @MethodSource(value = "outstandingAssessmentData")
+    @MethodSource(value = "outstandingPassportAssessmentData")
     void givenOutstandingPassport_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListReturned(
-            String replaced, String valid, CurrentStatus status) {
+            Boolean replaced, Boolean valid, CurrentStatus status) {
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_PASSPORT_ASSESSMENT_FOUND);
         saveTestPassportedAssessment(repOrder, replaced, valid, status);
@@ -119,6 +124,18 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
                 Arguments.of(NO, NO, COMPLETE));
     }
 
+    // replaced / valid / status
+    private static Stream<Arguments> nonOutstandingPassportAssessmentData() {
+        return Stream.of(
+                Arguments.of(true, true, IN_PROGRESS),
+                Arguments.of(true, false, IN_PROGRESS),
+                Arguments.of(true, true, COMPLETE),
+                Arguments.of(true, false, COMPLETE),
+                Arguments.of(false, false, IN_PROGRESS),
+                Arguments.of(false, true, COMPLETE),
+                Arguments.of(false, false, COMPLETE));
+    }
+
     @ParameterizedTest
     @MethodSource(value = "nonOutstandingAssessmentData")
     void givenNonOutstandingInitMeans_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
@@ -142,9 +159,9 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     }
 
     @ParameterizedTest
-    @MethodSource(value = "nonOutstandingAssessmentData")
+    @MethodSource(value = "nonOutstandingPassportAssessmentData")
     void givenNonOutstandingPassport_whenCheckForOutstandingAssessmentsIsCalled_thenErrorListEmpty(
-            String replaced, String valid, CurrentStatus status) {
+            Boolean replaced, Boolean valid, CurrentStatus status) {
         saveTestPassportedAssessment(repOrder, replaced, valid, status);
         Optional<ErrorMessage> errorMessage =
                 outstandingAssessmentService.checkForOutstandingAssessments(repOrder.getId());
@@ -168,7 +185,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
 
         ErrorMessage expectedError =
                 new ErrorMessage("", OutstandingAssessmentService.MSG_OUTSTANDING_MEANS_ASSESSMENT_FOUND);
-        saveTestPassportedAssessment(repOrder, NO, YES, IN_PROGRESS);
+        saveTestPassportedAssessment(repOrder, false, true, IN_PROGRESS);
         saveTestHardshipAssessment(repOrder, NO, YES, IN_PROGRESS);
         saveTestFullMeansAssessment(repOrder, NO, YES, IN_PROGRESS);
         Optional<ErrorMessage> errorMessage =
@@ -198,7 +215,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
     }
 
     private void saveTestPassportedAssessment(
-            RepOrderEntity repOrderEntity, String replaced, String valid, CurrentStatus status) {
+            RepOrderEntity repOrderEntity, Boolean replaced, Boolean valid, CurrentStatus status) {
         PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportAssessment.setRepOrder(repOrderEntity);
         passportAssessment.setReplaced(replaced);

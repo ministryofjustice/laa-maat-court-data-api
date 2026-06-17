@@ -70,8 +70,7 @@ class PassportAssessmentEvidenceMapperTest {
                 .isEqualTo(evidenceEntity.getDateReceived().toLocalDate());
         assertThat(response.getEvidenceType())
                 .isEqualTo(IncomeEvidenceType.getFrom(evidenceEntity.getIncomeEvidence()));
-        assertThat(response.getMandatory())
-                .isEqualTo(evidenceEntity.getMandatory().equals("Y"));
+        assertThat(response.getMandatory()).isEqualTo(evidenceEntity.getMandatory());
         assertThat(response.getDescription()).isEqualTo(evidenceEntity.getOtherText());
     }
 

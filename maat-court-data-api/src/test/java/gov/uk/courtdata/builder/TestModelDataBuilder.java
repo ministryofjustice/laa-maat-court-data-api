@@ -706,7 +706,7 @@ public class TestModelDataBuilder {
         PassportedAssessmentMetadata metadata = new PassportedAssessmentMetadata()
                 .withApplicationId(123)
                 .withLegacyApplicationId(repId)
-                .withUserSession(new ApiUserSession("test-user", "1234567890abfcdef"))
+                .withUserSession(new ApiUserSession("test-f", "1234567890abfcdef"))
                 .withCaseManagementUnitId(CMU_ID)
                 .withUsn(USN_VALUE);
 

@@ -81,7 +81,7 @@ public class PassportAssessmentEvidenceEntity {
     private LocalDateTime removedDate;
 
     @Column(name = "MANDATORY", length = 1)
-    private String mandatory;
+    private Boolean mandatory;
 
     @Column(name = "OTHER_TEXT", length = 150)
     private String otherText;

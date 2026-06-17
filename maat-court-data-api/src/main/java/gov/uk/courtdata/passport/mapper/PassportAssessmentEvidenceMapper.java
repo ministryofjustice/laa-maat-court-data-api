@@ -27,7 +27,6 @@ public interface PassportAssessmentEvidenceMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "dateReceived", source = "dateReceived", qualifiedByName = "mapEvidenceDateReceived")
     @Mapping(target = "description", source = "otherText")
-    @Mapping(target = "mandatory", source = "mandatory", qualifiedByName = "mapEvidenceMandatory")
     @Mapping(target = "evidenceType", source = "incomeEvidence", qualifiedByName = "mapEvidenceType")
     ApiIncomeEvidence toApiIncomeEvidence(PassportAssessmentEvidenceEntity evidenceEntity);
 }

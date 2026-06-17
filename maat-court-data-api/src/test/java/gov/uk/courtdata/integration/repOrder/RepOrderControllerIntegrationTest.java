@@ -68,6 +68,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     private RepOrderEntity repOrderFuture2;
     public Integer repOrderIdNoSentenceOrderDate;
     public Integer repId;
+    private static final String FIRST_NAME = "FirstName";
 
     @Autowired
     private RepOrderMapper mapper;
@@ -453,7 +454,7 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     void givenAValidInput_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
-                        .content(TestModelDataBuilder.getMaatSearchRequestJson("FirstName"))
+                        .content(TestModelDataBuilder.getMaatSearchRequestJson(FIRST_NAME))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -463,4 +464,21 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
                 .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
     }
+
+    @Test
+    void givenNullAsn_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(TestModelDataBuilder.getMaatSearchRequestJsonWithNullASN(FIRST_NAME))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].maatId").value(repOrderIdNoSentenceOrderDate))
+                .andExpect(jsonPath("$[0].isLinked").value(Boolean.TRUE))
+                .andExpect(jsonPath("$[0].linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
+                .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
+                .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
+    }
+
+
 }

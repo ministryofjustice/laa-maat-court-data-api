@@ -82,6 +82,8 @@ class RepOrderControllerTest {
     private static final String PASSPORT_ASSESSOR_NAME_VALUE = "Maeve OConnor";
     private static final String DATE_PASSPORT_CREATED_VALUE = "2015-01-09T11:16:29";
     private static final String FUNDING_DECISION_VALUE = "GRANTED";
+    private static final String FIRST_NAME = "FirstName";
+
 
     private static final String SEARCH_MAAT_APPLICATION =
             "/api/internal/v1/assessment/rep-orders/search-maat-application";
@@ -613,6 +615,36 @@ class RepOrderControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
                         .content(maatSearchRequestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
+    }
+
+    @Test
+    void givenRequestWithNullAsn_whenSearchApplicationIsInvoked_thenIsValidRequest() throws Exception {
+        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class)))
+                .thenReturn(List.of(TestModelDataBuilder.getMaatSearchResponse()));
+
+        String requestJson = TestModelDataBuilder.getMaatSearchRequestJsonWithNullASN(FIRST_NAME);
+
+        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
+    }
+
+    @Test
+    void givenRequestWithValidAsn_whenSearchApplicationIsInvoked_thenIsValidRequest() throws Exception {
+        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class)))
+                .thenReturn(List.of(TestModelDataBuilder.getMaatSearchResponse()));
+
+        String requestJson = TestModelDataBuilder.getMaatSearchRequestJson(FIRST_NAME);
+
+        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                        .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -1901,6 +1901,21 @@ public class TestModelDataBuilder {
                         CASE_TYPE_VALUE);
     }
 
+    public static String getMaatSearchRequestJsonWithNullASN(String firstName) {
+        return """
+                {
+                  "firstName": "%s",
+                  "lastName": "LastName",
+                  "dob": "%s",
+                  "asn": null,
+                  "committalDate": "%s",
+                  "niNumber": "%s",
+                  "caseType": "%s"
+                }
+                """
+                .formatted(firstName, TEST_DATE.toLocalDate(), TEST_DATE.toLocalDate(), NI_NUMBER, CASE_TYPE_VALUE);
+    }
+
     public static String getMaatSearchRequestJsonWithNullDob() {
         return """
                 {

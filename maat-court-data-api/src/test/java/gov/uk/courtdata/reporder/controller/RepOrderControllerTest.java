@@ -84,7 +84,6 @@ class RepOrderControllerTest {
     private static final String FUNDING_DECISION_VALUE = "GRANTED";
     private static final String FIRST_NAME = "FirstName";
 
-
     private static final String SEARCH_MAAT_APPLICATION =
             "/api/internal/v1/assessment/rep-orders/search-maat-application";
 

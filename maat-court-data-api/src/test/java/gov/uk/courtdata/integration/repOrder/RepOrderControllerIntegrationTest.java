@@ -538,5 +538,4 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
                 .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
                 .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
     }
-
 }

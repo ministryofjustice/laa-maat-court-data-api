@@ -100,6 +100,7 @@ public class WQDefendantProcessor {
             }
         }
 
+        log.info("There is no valid phone number found, setting the field {} to null", telephoneFieldName);
         return null;
     }
 

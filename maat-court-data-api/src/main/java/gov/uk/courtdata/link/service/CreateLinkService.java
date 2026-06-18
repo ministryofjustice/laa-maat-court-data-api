@@ -3,7 +3,7 @@ package gov.uk.courtdata.link.service;
 import gov.uk.courtdata.dto.CourtDataDTO;
 import gov.uk.courtdata.exception.MAATCourtDataException;
 import gov.uk.courtdata.exception.ValidationException;
-import gov.uk.courtdata.laastatus.service.LaaStatusServiceUpdate;
+import gov.uk.courtdata.laastatus.service.DlrmStatusUpdateService;
 import gov.uk.courtdata.link.impl.SaveAndLinkImpl;
 import gov.uk.courtdata.link.validator.ValidationProcessor;
 import gov.uk.courtdata.model.CaseDetails;
@@ -27,7 +27,7 @@ public class CreateLinkService {
     private final ValidationProcessor validationProcessor;
     private final OffenceCodeRefDataProcessor offenceCodeRefDataProcessor;
     private final ResultCodeRefDataProcessor resultCodeRefDataProcessor;
-    private final LaaStatusServiceUpdate laaStatusServiceUpdate;
+    private final DlrmStatusUpdateService dlrmStatusUpdateService;
 
     /**
      * @param caseDetails
@@ -41,7 +41,7 @@ public class CreateLinkService {
         processStaticRefData(courtDataDTO);
         saveAndLinkImpl.execute(courtDataDTO);
         if (caseDetails.isCanUpdateLaaStatus()) {
-            laaStatusServiceUpdate.autoLAAStatusUpdate(courtDataDTO);
+            dlrmStatusUpdateService.autoLAAStatusUpdate(courtDataDTO);
         }
     }
 

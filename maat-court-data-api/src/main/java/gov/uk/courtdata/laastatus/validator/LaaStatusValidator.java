@@ -25,7 +25,7 @@ public class LaaStatusValidator {
         return MessageCollection.builder().messages(validationMessages).build();
     }
 
-    private String validateLAAStatus(Offence offence) {
+    public String validateLAAStatus(Offence offence) {
 
         String myReturn = null;
         if (IOJDecision.isFailedDecision(offence.getIojDecision())

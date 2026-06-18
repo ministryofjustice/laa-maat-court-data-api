@@ -9,7 +9,10 @@ import gov.uk.courtdata.laastatus.validator.LaaStatusValidator;
 import gov.uk.courtdata.model.CaseDetails;
 import gov.uk.courtdata.model.Offence;
 import gov.uk.courtdata.model.laastatus.AutoLaaStatusUpdate;
+import gov.uk.courtdata.repository.CaseRepository;
 import gov.uk.courtdata.repository.DlrmStatusUpdateRepository;
+import gov.uk.courtdata.repository.OffenceRepository;
+import gov.uk.courtdata.repository.WqLinkRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -32,6 +36,12 @@ public class DlrmStatusUpdateService {
     private final LaaStatusValidator laaStatusValidator;
 
     private final DlrmStatusUpdateRepository dlrmStatusUpdateRepository;
+
+    private final WqLinkRegisterRepository wqLinkRegisterRepository;
+
+    private final OffenceRepository offenceRepository;
+
+    private final CaseRepository caseRepository;
 
     public void autoLAAStatusUpdate(CourtDataDTO courtDataDTO) {
         log.info("Start - Auto LAA status update");
@@ -106,7 +116,7 @@ public class DlrmStatusUpdateService {
             }
             mapAutoLaaStatusToOffence(offence, previousLaaStatusUpdate);
 
-            List<WqLinkRegisterEntity> linkedList = laaStatusService.getLinkingDetails(repId);
+            List<WqLinkRegisterEntity> linkedList = getLinkingDetails(repId);
             if (linkedList == null || linkedList.isEmpty()) {
                 log.info("No linking records found for repId: {}", repId);
                 return String.format("No linking records found for repId: %d", repId);
@@ -120,10 +130,8 @@ public class DlrmStatusUpdateService {
 
             WqLinkRegisterEntity linked = linkedList.get(0);
 
-            Optional<OffenceEntity> linkedOffences =
-                    laaStatusService.getOffenceDetails(linked.getCaseId(), offence.getOffenceCode());
-            Optional<CaseEntity> linkedCases =
-                    laaStatusService.getCaseDetails(linked.getCaseId(), linked.getCreatedTxId());
+            Optional<OffenceEntity> linkedOffences = getOffenceDetails(linked.getCaseId(), offence.getOffenceCode());
+            Optional<CaseEntity> linkedCases = getCaseDetails(linked.getCaseId(), linked.getCreatedTxId());
 
             if (linkedOffences == null || linkedOffences.isEmpty()) {
                 log.info("No offence details found for linking record, repId: {}", repId);
@@ -197,19 +205,19 @@ public class DlrmStatusUpdateService {
 
         // Save offence if updated
         if (canUpdateOffence) {
-            laaStatusService.saveOffence(linkedOffence);
+            saveOffence(linkedOffence);
         }
 
         // Update and save mlrCat if present
         if (previousLaaStatusUpdate.getMlrCat() != null) {
             linked.setMlrCat(previousLaaStatusUpdate.getMlrCat());
-            laaStatusService.saveLink(linked);
+            saveLink(linked);
         }
 
         // Update and save cjsAreaCode if present
         if (linkedCase != null && previousLaaStatusUpdate.getCjsAreaCode() != null) {
             linkedCase.setCjsAreaCode(previousLaaStatusUpdate.getCjsAreaCode());
-            laaStatusService.saveCase(linkedCase);
+            saveCase(linkedCase);
         }
     }
 
@@ -217,17 +225,15 @@ public class DlrmStatusUpdateService {
         log.info("Start - Find previous LAA status for repId: {}, offence code: {}", repId, offenceCode);
 
         AutoLaaStatusUpdate previousLaaStatusUpdate = new AutoLaaStatusUpdate();
-        Optional<WqLinkRegisterEntity> unlinkedList = laaStatusService.getUnLinkDetails(repId);
+        Optional<WqLinkRegisterEntity> unlinkedList = getUnLinkDetails(repId);
         if (unlinkedList.isEmpty()) {
             log.info("No Previous unlinked records found for repId: {}", repId);
             return null;
         }
         WqLinkRegisterEntity unlinked = unlinkedList.get();
 
-        Optional<OffenceEntity> unlinkedOffences =
-                laaStatusService.getOffenceDetails(unlinked.getCaseId(), offenceCode);
-        Optional<CaseEntity> unlinkedCases =
-                laaStatusService.getCaseDetails(unlinked.getCaseId(), unlinked.getCreatedTxId());
+        Optional<OffenceEntity> unlinkedOffences = getOffenceDetails(unlinked.getCaseId(), offenceCode);
+        Optional<CaseEntity> unlinkedCases = getCaseDetails(unlinked.getCaseId(), unlinked.getCreatedTxId());
         if (unlinkedOffences == null || unlinkedOffences.isEmpty()) {
             log.info("No Previous offence found for unlinked record, repId: {}", repId);
             return null;
@@ -279,5 +285,36 @@ public class DlrmStatusUpdateService {
         dlrmUpdateStatusEntity.setOffenceId(offenceId);
         dlrmUpdateStatusEntity.setErrorMessage(status);
         dlrmStatusUpdateRepository.saveAndFlush(dlrmUpdateStatusEntity);
+    }
+
+    public Optional<WqLinkRegisterEntity> getUnLinkDetails(Integer repId) {
+        return wqLinkRegisterRepository.findUnlinkByMaat(repId);
+    }
+
+    public Optional<OffenceEntity> getOffenceDetails(Integer caseId, String offenceCode) {
+        return offenceRepository.getOffenceDetail(caseId, offenceCode);
+    }
+
+    public List<WqLinkRegisterEntity> getLinkingDetails(Integer repId) {
+        return wqLinkRegisterRepository.findBymaatId(repId);
+    }
+
+    public Optional<CaseEntity> getCaseDetails(Integer caseId, Integer txId) {
+        return caseRepository.getCaseDetail(caseId, txId);
+    }
+
+    @Transactional
+    public OffenceEntity saveOffence(OffenceEntity wq) {
+        return offenceRepository.save(wq);
+    }
+
+    @Transactional
+    public WqLinkRegisterEntity saveLink(WqLinkRegisterEntity wq) {
+        return wqLinkRegisterRepository.save(wq);
+    }
+
+    @Transactional
+    public CaseEntity saveCase(CaseEntity wq) {
+        return caseRepository.save(wq);
     }
 }

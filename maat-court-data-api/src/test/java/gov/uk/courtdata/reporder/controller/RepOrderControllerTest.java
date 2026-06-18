@@ -634,19 +634,4 @@ class RepOrderControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
     }
-
-    @Test
-    void givenRequestWithValidAsn_whenSearchApplicationIsInvoked_thenIsValidRequest() throws Exception {
-        when(repOrderService.searchMaatApplication(any(MaatSearchRequest.class)))
-                .thenReturn(List.of(TestModelDataBuilder.getMaatSearchResponse()));
-
-        String requestJson = TestModelDataBuilder.getMaatSearchRequestJson(FIRST_NAME);
-
-        mvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
-                        .content(requestJson)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].maatId").value(TestModelDataBuilder.REP_ID));
-    }
 }

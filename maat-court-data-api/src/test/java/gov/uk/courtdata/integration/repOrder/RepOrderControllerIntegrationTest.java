@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.jayway.jsonpath.JsonPath;
@@ -63,6 +64,8 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
             "/api/internal/v1/assessment/rep-orders/search-maat-application";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
+    private static final String FIRST_NAME = "FirstName";
+
     private RepOrderEntity repOrderValid;
     private RepOrderEntity repOrderValid2;
     private RepOrderEntity repOrderFuture;
@@ -453,16 +456,9 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     @Test
     void givenAValidInput_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
-                        .content(TestModelDataBuilder.getMaatSearchRequestJson("FirstName"))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].maatId").value(repOrderIdNoSentenceOrderDate))
-                .andExpect(jsonPath("$[0].isLinked").value(Boolean.TRUE))
-                .andExpect(jsonPath("$[0].linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
-                .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
-                .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
+        expectLinkedSearchResult(mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                .content(TestModelDataBuilder.getMaatSearchRequestJson(FIRST_NAME))
+                .contentType(MediaType.APPLICATION_JSON)));
     }
 
     @Test
@@ -521,5 +517,23 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
         softly.assertThat(repOrderResponse.getDateModified()).isEqualTo(persistedRepOrder.getDateModified());
 
         softly.assertThat(repOrderResponse.getDateModified()).isAfterOrEqualTo(originalDateModified);
+    }
+
+    @Test
+    void givenNullAsn_whenSearchApplicationIsInvoked_thenCorrectResponseIsReturned() throws Exception {
+        expectLinkedSearchResult(mockMvc.perform(MockMvcRequestBuilders.post(SEARCH_MAAT_APPLICATION)
+                .content(TestModelDataBuilder.getMaatSearchRequestJsonWithNullASN(FIRST_NAME))
+                .contentType(MediaType.APPLICATION_JSON)));
+    }
+
+    private void expectLinkedSearchResult(ResultActions resultActions) throws Exception {
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].maatId").value(repOrderIdNoSentenceOrderDate))
+                .andExpect(jsonPath("$[0].isLinked").value(Boolean.TRUE))
+                .andExpect(jsonPath("$[0].linkingDetail.caseUrn").value(TestEntityDataBuilder.CASE_URN))
+                .andExpect(jsonPath("$[0].linkingDetail.libraId").value(TestEntityDataBuilder.LIBRA_ID))
+                .andExpect(jsonPath("$[0].linkingDetail.caseId").value(TestEntityDataBuilder.TEST_CASE_ID));
     }
 }

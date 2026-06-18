@@ -22,7 +22,6 @@ public class MaatSearchRequest {
     private LocalDate dob;
     private String niNumber;
 
-    @NotNull
     private String asn;
 
     private LocalDate committalDate;

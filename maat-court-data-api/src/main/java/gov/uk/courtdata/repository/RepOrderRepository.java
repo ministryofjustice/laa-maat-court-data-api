@@ -78,7 +78,7 @@ public interface RepOrderRepository
                                 JOIN TOGDATA.APPLICANTS app ON (rep.APPL_ID = app.id)
                                 WHERE UPPER(app.FIRST_NAME) = UPPER(:#{#req.firstName})
                                 AND UPPER(app.LAST_NAME) = UPPER(:#{#req.lastName})
-                                AND rep.ARREST_SUMMONS_NO = :#{#req.asn}
+                                AND (:#{#req.asn} IS NULL OR rep.ARREST_SUMMONS_NO = :#{#req.asn})
                                 AND (:#{#req.dob} IS NULL OR app.DOB = :#{#req.dob})
                                 AND (:#{#req.niNumber} IS NULL OR app.NI_NUMBER = :#{#req.niNumber})
                                 AND (:#{#req.committalDate} IS NULL OR rep.COMMITTAL_DATE = :#{#req.committalDate})

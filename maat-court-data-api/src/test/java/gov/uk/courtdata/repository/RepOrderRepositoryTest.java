@@ -71,4 +71,28 @@ class RepOrderRepositoryTest {
 
         assertThat(repository.findRepId(req)).isEmpty();
     }
+
+    @Test
+    void findRepId_shouldReturnResult_whenAsnIsNull() {
+        MaatSearchRequest request = MaatSearchRequest.builder()
+                .firstName("John")
+                .lastName("Smith")
+                .asn(null)
+                .build();
+
+        Set<Integer> result = repository.findRepId(request);
+
+        assertThat(result).isNotEmpty();
+    }
+
+    @Test
+    void findRepId_returnsEmpty_whenAsnProvidedButDoesNotMatch() {
+        MaatSearchRequest request = MaatSearchRequest.builder()
+                .firstName("John")
+                .lastName("Smith")
+                .asn("DOES-NOT-MATCH")
+                .build();
+
+        assertThat(repository.findRepId(request)).isEmpty();
+    }
 }

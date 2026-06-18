@@ -64,13 +64,15 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
             "/api/internal/v1/assessment/rep-orders/search-maat-application";
     private static final String CURRENT_REGISTRATION = "current-registration";
     private static final String VEHICLE_OWNER_INDICATOR_YES = "Y";
+    private static final String FIRST_NAME = "FirstName";
+
     private RepOrderEntity repOrderValid;
     private RepOrderEntity repOrderValid2;
     private RepOrderEntity repOrderFuture;
     private RepOrderEntity repOrderFuture2;
     public Integer repOrderIdNoSentenceOrderDate;
     public Integer repId;
-    private static final String FIRST_NAME = "FirstName";
+
 
     @Autowired
     private RepOrderMapper mapper;

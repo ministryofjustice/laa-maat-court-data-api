@@ -21,7 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "DLRM_STATUS_UPDATE", schema = "MLA")
+@Table(name = "XXMLA_DLRM_STATUS_UPDATE", schema = "MLA")
 public class DlrmStatusUpdateEntity {
 
     @Id

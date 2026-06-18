@@ -73,7 +73,6 @@ class RepOrderControllerIntegrationTest extends MockMvcIntegrationTest {
     public Integer repOrderIdNoSentenceOrderDate;
     public Integer repId;
 
-
     @Autowired
     private RepOrderMapper mapper;
 

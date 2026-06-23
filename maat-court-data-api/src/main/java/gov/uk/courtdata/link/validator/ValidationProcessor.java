@@ -44,10 +44,15 @@ public class ValidationProcessor {
 
         final Integer maatId = caseDetails.getMaatId();
         maatIdValidator.validate(maatId);
+        log.info("maatIdValidator completed!!!");
         cpDataValidator.validate(caseDetails);
+        log.info("cpDataValidator completed!!!");
         linkExistsValidator.validate(maatId);
+        log.info("linkExistsValidator completed!!!");
         courtValidator.validate(caseDetails);
+        log.info("courtValidator completed!!!");
         referenceDataValidator.validate(caseDetails);
+        log.info("referenceDataValidator completed!!!");
 
         final Optional<SolicitorMAATDataEntity> optSolicitorMAATDataEntity = solicitorValidator.validate(maatId);
         SolicitorMAATDataEntity solicitorMAATDataEntity = optSolicitorMAATDataEntity.orElse(null);

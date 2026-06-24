@@ -58,23 +58,37 @@ public class DlrmStatusUpdateService {
             return;
         }
 
+        log.info("offences found for  Maat id: {} and count :{}", repId, offenceList.size());
         log.info("Auto LAA status update for Maat id: {}", repId);
 
-        Map<Offence, String> offenceResultMap = offenceList.stream()
-                .collect(Collectors.toMap(
-                        offence -> offence, offence -> processOffenceForAutoLaaStatus(repId, offence)));
-
-        // Step 2: Save DLRM status update for offences with non-null result
-        offenceList.forEach(offence -> {
-            String result = offenceResultMap.get(offence);
+        Map<String, String> offenceResultMap = new java.util.HashMap<>();
+        for (Offence offence : offenceList) {
+            log.info("Processing offence with code: {} for repId: {}", offence.getOffenceCode(), repId);
+            String result = processOffenceForAutoLaaStatus(repId, offence);
+            log.info("Result with code: {} for repId: {}", offence.getOffenceCode(), repId);
+            log.info("End  Processing offence with code: {} for repId: {}", offence.getOffenceCode(), repId);
+            offenceResultMap.put(offence.getOffenceCode(), result);
             if (result != null) {
+                log.info(
+                        "Saving DLRM status update for repId: {}, offenceId: {}, offenceCode: {}, result: {}",
+                        repId,
+                        offence.getOffenceId(),
+                        offence.getOffenceCode(),
+                        result);
                 saveDlrmStatusUpdate(repId, offence.getOffenceId(), offence.getOffenceCode(), result);
+                log.info(
+                        "Saved DLRM status update for repId: {}, offenceId: {}, offenceCode: {}, result: {}",
+                        repId,
+                        offence.getOffenceId(),
+                        offence.getOffenceCode(),
+                        result);
             }
-        });
+        }
+        log.info("Completed processing all offences for repId: {}", repId);
 
         // Step 3: Check eligibility (any offence with null result)
         boolean hasEligibleOffence = offenceResultMap.values().stream().anyMatch(result -> result == null);
-
+        log.info("Eligibility check for repId: {} - hasEligibleOffence: {}", repId, hasEligibleOffence);
         if (!hasEligibleOffence) {
             log.info("No previous status available to restore for repId: {}", repId);
             saveDlrmStatusUpdate(
@@ -89,6 +103,7 @@ public class DlrmStatusUpdateService {
         }
 
         List<Offence> filteredOffences = filterValidOffences(offenceList);
+        log.info("Filtered offences for repId: {} - count: {}", repId, filteredOffences.size());
 
         if (filteredOffences.isEmpty()) {
             log.info("No offences eligible for LAA status update for repId: {}", repId);
@@ -101,15 +116,17 @@ public class DlrmStatusUpdateService {
             log.info("Ends - Auto LAA status update");
             return;
         }
+        log.info("Assigning filtered offences to CourtDataDTO for repId: {}", repId);
         assignFilteredOffencesToCourtDataDTO(courtDataDTO, filteredOffences);
+        log.info("Assigned filtered offences to CourtDataDTO for repId: {}", repId);
 
         processLaaStatusServiceForCDA(courtDataDTO);
+        log.info("Completed processing LAA status service for CDA for repId: {}", repId);
 
         log.info("Ends - Auto LAA status update");
     }
 
     private String processOffenceForAutoLaaStatus(Integer repId, Offence offence) {
-        log.info("Processing offence with code: {} for repId: {}", offence.getOffenceCode(), repId);
         try {
             AutoLaaStatusUpdate previousLaaStatusUpdate = findPreviousLAAStatus(repId, offence.getOffenceCode());
             if (previousLaaStatusUpdate == null) {

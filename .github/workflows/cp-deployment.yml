@@ -80,9 +80,11 @@ jobs:
           GITHUB_TAG: ${{ github.sha }}
 
       - name: Notify Slack channel
+        if: ${{ always() }}
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          job-status: ${{ job.status }}
 
   deploy-to-test:
     name: deploy-to-test
@@ -112,9 +114,11 @@ jobs:
           GITHUB_TAG: ${{ github.sha }}
 
       - name: Notify Slack channel
+        if: ${{ always() }}
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          job-status: ${{ job.status }}
 
   deploy-to-uat:
     name: deploy-to-uat
@@ -144,9 +148,11 @@ jobs:
           GITHUB_TAG: ${{ github.sha }}
 
       - name: Notify Slack channel
+        if: ${{ always() }}
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          job-status: ${{ job.status }}
 
   deploy-to-production:
     name: deploy-to-production
@@ -176,6 +182,8 @@ jobs:
           GITHUB_TAG: ${{ github.sha }}
 
       - name: Notify Slack channel
+        if: ${{ always() }}
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          job-status: ${{ job.status }}

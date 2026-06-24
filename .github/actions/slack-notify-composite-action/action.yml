@@ -2,26 +2,25 @@ name: Slack channel notification
 description: "Send notification to Slack channel"
 
 inputs:
-  slack-channel:
-    description: "The name of the Slack channel to which notifications will be sent. Default - laa-crimeapps-ci"
-    required: false
-    default: "laa-crimeapps-ci"
   webhook-url:
     description: "The webhook URL of the Slack channel."
+    required: true
+  job-status:
+    description: "The calling jobs status."
     required: true
 
 runs:
   using: "composite"
   steps:
-    - name: Calculate build start time
-      id: build-run-time
+    - name: Calculate deployment time
+      id: deployment-time
       shell: bash
       run: |
-        echo "BUILD_RUN_TIME=$(date +'%d/%m/%Y %T')" >> $GITHUB_OUTPUT
+        echo "DEPLOYMENT_TIME=$(date +'%d/%m/%Y %T')" >> $GITHUB_OUTPUT
 
     - name: Notify success to Slack
       id: slack-success
-      if: ${{ success() }}
+      if: ${{ inputs.job-status == 'success' }}
       uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c #v3
       with:
         webhook: ${{ inputs.webhook-url }}
@@ -41,7 +40,7 @@ runs:
                 "type": "section",
                 "fields": [
                   { "type": "mrkdwn", "text": "*Project:* ${{ github.event.repository.name }}" },
-                  { "type": "mrkdwn", "text": "*When:* ${{ steps.build-run-time.outputs.BUILD_RUN_TIME }}" },
+                  { "type": "mrkdwn", "text": "*When:* ${{ steps.deployment-time.outputs.DEPLOYMENT_TIME }}" },
                   { "type": "mrkdwn", "text": "*Branch:* \n${{ github.ref_name }}" },
                   { "type": "mrkdwn", "text": "*Successful Job:* \n${{ github.job }}" }
                 ]
@@ -61,7 +60,7 @@ runs:
           }
 
     - name: Notify failure to Slack
-      if: ${{ failure() }}
+      if: ${{ inputs.job-status != 'success' }}
       uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c
       with:
         webhook: ${{ inputs.webhook-url }}
@@ -84,7 +83,7 @@ runs:
                   { "type": "mrkdwn", "text": "*Branch:*\n${{ github.ref_name }}" },
                   { "type": "mrkdwn", "text": "*Job:*\n${{ github.job }}" },
                   { "type": "mrkdwn", "text": "*Actor:*\n${{ github.actor }}" },
-                  { "type": "mrkdwn", "text": "*When:* ${{ steps.build-run-time.outputs.BUILD_RUN_TIME }}" },
+                  { "type": "mrkdwn", "text": "*When:* ${{ steps.deployment-time.outputs.DEPLOYMENT_TIME }}" },
                   { "type": "mrkdwn", "text": "*Workflow:*\n${{ github.workflow }}" }
                 ]
               },

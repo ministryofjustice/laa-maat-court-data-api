@@ -1,7 +1,10 @@
 package gov.uk.courtdata.passport.controller;
 
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,7 +16,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import gov.uk.courtdata.builder.TestModelDataBuilder;
 import gov.uk.courtdata.exception.RequestedObjectNotFoundException;
 import gov.uk.courtdata.passport.service.PassportAssessmentServiceV2;
+import uk.gov.justice.laa.crime.error.ErrorExtension;
 import uk.gov.justice.laa.crime.error.ProblemDetailError;
+import uk.gov.justice.laa.crime.util.ProblemDetailUtil;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +28,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(PassportAssessmentControllerV2.class)
@@ -32,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class PassportAssessmentControllerV2Test {
 
     private static final String ENDPOINT_URL = "/api/internal/v2/assessment/passport-assessments";
+    private static final String ROLLBACK_URL = ENDPOINT_URL + "/{id}/rollback";
 
     @Autowired
     private MockMvc mvc;
@@ -103,5 +114,41 @@ class PassportAssessmentControllerV2Test {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect(jsonPath("$.detail").value("Request violates a data constraint"));
         verify(passportAssessmentService, times(1)).create(any());
+    }
+
+    @Test
+    void givenAValidPassportAssessmentId_whenRollbackIsCalled_thenOkResponseIsReturned() throws Exception {
+        doNothing().when(passportAssessmentService).rollback(LEGACY_PASSPORT_ASSESSMENT_ID);
+
+        mvc.perform(MockMvcRequestBuilders.post(ROLLBACK_URL, LEGACY_PASSPORT_ASSESSMENT_ID))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenAnInvalidPassportAssessmentId_whenRollbackIsCalled_thenNotFoundResponseIsReturned() throws Exception {
+        String exceptionMessage =
+                String.format("No Passported Assessment found for ID: %d", LEGACY_PASSPORT_ASSESSMENT_ID);
+
+        doThrow(new RequestedObjectNotFoundException(exceptionMessage))
+                .when(passportAssessmentService)
+                .rollback(LEGACY_PASSPORT_ASSESSMENT_ID);
+
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post(ROLLBACK_URL, LEGACY_PASSPORT_ASSESSMENT_ID))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andReturn();
+
+        validateProblemDetailResponse(
+                result.getResponse().getContentAsString(),
+                ProblemDetailError.OBJECT_NOT_FOUND.code(),
+                "No Passported Assessment found for ID: " + LEGACY_PASSPORT_ASSESSMENT_ID);
+    }
+
+    private void validateProblemDetailResponse(String responseString, String expectedCode, String expectedDetail)
+            throws JsonProcessingException {
+        ProblemDetail problemDetail = ProblemDetailUtil.parseProblemDetailJson(responseString);
+        assertThat(problemDetail.getDetail()).isEqualTo(expectedDetail);
+        Optional<ErrorExtension> extension = ProblemDetailUtil.getErrorExtension(problemDetail);
+        assertThat(extension).isPresent().get().hasFieldOrPropertyWithValue("code", expectedCode);
     }
 }

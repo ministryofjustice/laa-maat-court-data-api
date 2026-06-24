@@ -38,9 +38,19 @@ public class PassportAssessmentControllerV2 {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Create a passport assessment")
     public ResponseEntity<ApiCreatePassportedAssessmentResponse> create(
             @Valid @RequestBody ApiCreatePassportedAssessmentRequest request) {
         log.info("Create Passported Assessment Request Received");
         return ResponseEntity.ok(passportAssessmentService.create(request));
+    }
+
+    @PostMapping(value = "/{id}/rollback", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Rollback an existing passport assessment record")
+    @StandardProblemDetailErrorResponse
+    public ResponseEntity<ApiCreatePassportedAssessmentResponse> rollback(@PathVariable int id) {
+        log.info("Rollback Passported Assessment Request Received");
+        passportAssessmentService.rollback(id);
+        return ResponseEntity.ok().build();
     }
 }

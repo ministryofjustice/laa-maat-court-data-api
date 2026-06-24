@@ -216,7 +216,7 @@ class OutstandingAssessmentServiceIntegrationTest extends MockMvcIntegrationTest
 
     private void saveTestPassportedAssessment(
             RepOrderEntity repOrderEntity, Boolean replaced, Boolean valid, CurrentStatus status) {
-        PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
+        PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity(null);
         passportAssessment.setRepOrder(repOrderEntity);
         passportAssessment.setReplaced(replaced);
         passportAssessment.setValid(valid);

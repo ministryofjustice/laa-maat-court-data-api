@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface PassportAssessmentRepository
         extends JpaRepository<PassportAssessmentEntity, Integer>, JpaSpecificationExecutor<PassportAssessmentEntity> {
 
+    PassportAssessmentEntity findByRepOrderId(int repId);
+
     @Modifying
     @Query(
             value = "UPDATE TOGDATA.PASSPORT_ASSESSMENTS pa set pa.REPLACED = 'Y' WHERE pa.REP_ID = :repId",

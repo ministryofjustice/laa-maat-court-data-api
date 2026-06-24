@@ -220,7 +220,7 @@ class PassportAssessmentMapperTest {
                 Arguments.of(
                         named("result", "FAIL CONTINUE"),
                         named("pcobConfirmation", "AGEREL"),
-                        named("expectedDecisionReason", null)));
+                        named("expectedDecisionReason", PassportAssessmentDecisionReason.APPLICANT_AGE)));
     }
 
     @ParameterizedTest

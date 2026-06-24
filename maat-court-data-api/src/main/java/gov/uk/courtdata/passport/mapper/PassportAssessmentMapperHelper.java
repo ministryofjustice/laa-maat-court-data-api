@@ -1,15 +1,6 @@
 package gov.uk.courtdata.passport.mapper;
 
 import static uk.gov.justice.laa.crime.enums.BenefitRecipient.PARTNER;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.FAIL_BYPASS;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.PASS;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecision.TEMP_PASS;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.APPLICANT_AGE;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DOCUMENTATION_SUPPLIED;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.DWP_CHECK_UNAVAILABLE;
-import static uk.gov.justice.laa.crime.enums.PassportAssessmentDecisionReason.IN_CUSTODY;
 
 import gov.uk.courtdata.entity.PassportAssessmentEntity;
 import gov.uk.courtdata.entity.RepOrderEntity;
@@ -23,8 +14,6 @@ import uk.gov.justice.laa.crime.enums.evidence.IncomeEvidenceType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
 
 import org.mapstruct.Condition;
 import org.mapstruct.ConditionStrategy;
@@ -68,24 +57,7 @@ public class PassportAssessmentMapperHelper {
 
     @Named("decisionReasonMapper")
     public PassportAssessmentDecisionReason mapDecisionReason(PassportAssessmentEntity passportAssessmentEntity) {
-        final Map<PassportAssessmentDecision, Set<PassportAssessmentDecisionReason>> decisionReasonCombinations =
-                Map.of(
-                        PASS, Set.of(APPLICANT_AGE, DWP_CHECK, DOCUMENTATION_SUPPLIED),
-                        TEMP_PASS, Set.of(DWP_CHECK_UNAVAILABLE, IN_CUSTODY),
-                        FAIL_BYPASS, Set.of(DWP_CHECK),
-                        FAIL, Set.of());
-
-        String pcobConfirmation = passportAssessmentEntity.getPcobConfirmation();
-        Set<PassportAssessmentDecisionReason> allowedReasons = decisionReasonCombinations.get(
-                PassportAssessmentDecision.getFrom(passportAssessmentEntity.getResult()));
-
-        if (allowedReasons != null
-                && (allowedReasons.isEmpty()
-                        || allowedReasons.contains(PassportAssessmentDecisionReason.getFrom(pcobConfirmation)))) {
-            return PassportAssessmentDecisionReason.getFrom(pcobConfirmation);
-        } else {
-            return null;
-        }
+        return PassportAssessmentDecisionReason.getFrom(passportAssessmentEntity.getPcobConfirmation());
     }
 
     @Named("declaredBenefitMapper")

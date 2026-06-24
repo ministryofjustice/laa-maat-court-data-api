@@ -92,6 +92,12 @@ public class DlrmStatusUpdateService {
 
         if (filteredOffences.isEmpty()) {
             log.info("No offences eligible for LAA status update for repId: {}", repId);
+            saveDlrmStatusUpdate(
+                    repId,
+                    "",
+                    "",
+                    String.format(
+                            "No offences eligible for LAA status update and skipping laa status update call to CDA"));
             log.info("Ends - Auto LAA status update");
             return;
         }
@@ -103,6 +109,7 @@ public class DlrmStatusUpdateService {
     }
 
     private String processOffenceForAutoLaaStatus(Integer repId, Offence offence) {
+        log.info("Processing offence with code: {} for repId: {}", offence.getOffenceCode(), repId);
         try {
             AutoLaaStatusUpdate previousLaaStatusUpdate = findPreviousLAAStatus(repId, offence.getOffenceCode());
             if (previousLaaStatusUpdate == null) {
@@ -123,10 +130,12 @@ public class DlrmStatusUpdateService {
             }
 
             log.info(
-                    "Previous status is found status {}, IOJ {} and date {}",
+                    "Previous status is found status {}, IOJ {} and date {} for repId: {} and offence code: {}",
                     previousLaaStatusUpdate.getLegalAidStatus(),
                     previousLaaStatusUpdate.getIojDecision(),
-                    previousLaaStatusUpdate.getLegalAidStatusDate());
+                    previousLaaStatusUpdate.getLegalAidStatusDate(),
+                    repId,
+                    offence.getOffenceCode());
 
             WqLinkRegisterEntity linked = linkedList.get(0);
 
@@ -134,11 +143,20 @@ public class DlrmStatusUpdateService {
             Optional<CaseEntity> linkedCases = getCaseDetails(linked.getCaseId(), linked.getCreatedTxId());
 
             if (linkedOffences == null || linkedOffences.isEmpty()) {
-                log.info("No offence details found for linking record, repId: {}", repId);
-                return String.format("No offence details found for linking record, repId: %d", repId);
+                log.info(
+                        "No offence details found for linking record, repId: {} and offence code: {}",
+                        repId,
+                        offence.getOffenceCode());
+                return String.format(
+                        "No offence details found for linking record, repId: %d, , offence code: %s",
+                        repId, offence.getOffenceCode());
             }
             log.info("Updating previous status {}", previousLaaStatusUpdate);
             updateLinkedEntities(linked, linkedOffences.get(), linkedCases.orElse(null), previousLaaStatusUpdate);
+            log.info(
+                    "Successfully updated previous status for repId: {} and offence code: {}",
+                    repId,
+                    offence.getOffenceCode());
             return null;
         } catch (Exception e) {
             log.error(

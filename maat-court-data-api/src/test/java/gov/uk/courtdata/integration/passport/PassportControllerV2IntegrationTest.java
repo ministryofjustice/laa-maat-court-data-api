@@ -60,12 +60,9 @@ public class PassportControllerV2IntegrationTest extends MockMvcIntegrationTest 
         mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/" + passportAssessmentId + "/rollback"))
                 .andExpect(status().isOk());
 
-        Optional<PassportAssessmentEntity> rolledBackPassportAssessmentEntity =
-                Optional.ofNullable(repos.passportAssessment.findByRepOrderIdAndReplacedFalse(repId));
-        assertThat(rolledBackPassportAssessmentEntity).isNotNull();
-        assertThat(rolledBackPassportAssessmentEntity)
-                .hasValueSatisfying(passportAssessment ->
-                        assertThat(passportAssessment.getValid()).isFalse());
+        PassportAssessmentEntity rolledBackPassportAssessmentEntity =
+            repos.passportAssessment.findByRepOrderIdAndReplacedFalse(repId);
+        assertThat(rolledBackPassportAssessmentEntity.getValid()).isFalse();
     }
 
     @Test

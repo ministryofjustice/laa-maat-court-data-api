@@ -221,7 +221,7 @@ class PassportAssessmentEvidenceIntegrationTest extends MockMvcIntegrationTest {
         repOrderApplicantLinksEntity.setUnlinkDate(null);
         repos.repOrderApplicantLinks.saveAndFlush(repOrderApplicantLinksEntity);
 
-        passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportAssessmentEntity.setId(null);
         passportAssessmentEntity.getRepOrder().setId(repOrderEntity.getId());
         passportAssessmentEntity.setPassportEvidenceDueDate(DATE_TIME);

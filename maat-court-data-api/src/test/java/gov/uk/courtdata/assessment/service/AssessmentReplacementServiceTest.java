@@ -78,7 +78,7 @@ class AssessmentReplacementServiceTest {
     // Passported Assessments
     @Test
     void givenPassportAssessment_whenReplacePreviousAssessmentsIsInvoked_thenOldAssessmentsAreReplaced() {
-        PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        PassportAssessmentEntity passportAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
 
         assessmentReplacementService.replacePreviousAssessments(passportAssessment);
 
@@ -91,7 +91,7 @@ class AssessmentReplacementServiceTest {
 
     @Test
     void givenPassportedAssessmentMissingRepOrderId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
-        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportedAssessment.setId(TEST_ID);
         passportedAssessment.getRepOrder().setId(null);
         assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
@@ -100,7 +100,7 @@ class AssessmentReplacementServiceTest {
 
     @Test
     void givenPassportedAssessmentMissingRepOrder_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
-        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportedAssessment.setId(TEST_ID);
         passportedAssessment.setRepOrder(null);
         assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
@@ -109,7 +109,7 @@ class AssessmentReplacementServiceTest {
 
     @Test
     void givenPassportedAssessmentMissingAssessmentId_whenReplacePreviousAssessmentsIsInvoked_thenNothingIsReplaced() {
-        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        PassportAssessmentEntity passportedAssessment = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportedAssessment.setId(null);
         assessmentReplacementService.replacePreviousAssessments(passportedAssessment);
         verifyNoInteractions(financialAssessmentRepository, hardshipReviewRepository, passportAssessmentRepository);

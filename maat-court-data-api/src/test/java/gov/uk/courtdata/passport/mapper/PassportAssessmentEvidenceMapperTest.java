@@ -75,7 +75,7 @@ class PassportAssessmentEvidenceMapperTest {
     }
 
     private PassportAssessmentEntity buildPassportAssessment() {
-        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         passportAssessmentEntity.getRepOrder().setApplicationId(APPLICANT_ID);
         passportAssessmentEntity.setPassportEvidenceDueDate(DATE_TIME);
         passportAssessmentEntity.setAllPassportEvidenceReceivedDate(DATE_TIME);

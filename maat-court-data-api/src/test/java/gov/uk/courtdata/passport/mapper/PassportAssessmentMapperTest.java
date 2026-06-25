@@ -63,7 +63,7 @@ class PassportAssessmentMapperTest {
 
     @Test
     void givenPassportAssessmentEntity_whenMapToApiGetPassportedAssessmentResponse_thenAllFieldsMapped() {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setIncomeSupport(true);
         entity.setJobSeekers(null);
         entity.setEsa(null);
@@ -105,7 +105,7 @@ class PassportAssessmentMapperTest {
     @Test
     void
             givenPassportAssessmentEntityForUnder18_whenMapToApiGetPassportedAssessmentResponse_thenDeclaredBenefitIsNotMapped() {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setUnder18HeardInMagsCourt(true);
 
         var response = passportAssessmentMapper.toApiGetPassportedAssessmentResponse(entity, null);
@@ -131,7 +131,7 @@ class PassportAssessmentMapperTest {
     @MethodSource("declaredUnder18TestData")
     void givenHeardInYouthCourtAndHeardInMagsCourt_whenMapUnder18Called_thenUnder18IsMapped(
             Boolean heardInYouthCourt, Boolean heardInMagsCourt, Boolean expectedUnder18Declaration) {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setUnder18HeardInYouthCourt(heardInYouthCourt);
         entity.setUnder18HeardInMagsCourt(heardInMagsCourt);
 
@@ -159,7 +159,7 @@ class PassportAssessmentMapperTest {
             Boolean pensionCredit,
             Boolean universalCredit,
             BenefitType expectedBenefit) {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setIncomeSupport(incomeSupport);
         entity.setJobSeekers(jobSeekers);
         entity.setEsa(esa);
@@ -183,7 +183,7 @@ class PassportAssessmentMapperTest {
     @MethodSource("benefitRecipientTestData")
     void givenPartnerBenefitClaimed_whenMapBenefitRecipientCalled_thenBenefitRecipientIsMapped(
             Boolean partnerBenefitClaimed, BenefitRecipient expectedRecipient) {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setPartnerBenefitClaimed(partnerBenefitClaimed);
 
         BenefitRecipient benefitRecipient = passportAssessmentMapperHelper.mapBenefitRecipient(entity);
@@ -227,7 +227,7 @@ class PassportAssessmentMapperTest {
     @MethodSource("decisionReasonsTestData")
     void givenAResultAndPcobConfirmation_whenMapperCalled_thenDecisionReasonIsMapped(
             String result, String pcobConfirmation, PassportAssessmentDecisionReason expectedDecisionReason) {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setResult(result);
         entity.setPcobConfirmation(pcobConfirmation);
 
@@ -254,7 +254,7 @@ class PassportAssessmentMapperTest {
     @MethodSource("assessmentDecisionTestData")
     void givenAResult_whenMapperCalled_thenAssessmentDecisionIsMapped(
             String result, PassportAssessmentDecision expectedAssessmentDecision) {
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         entity.setResult(result);
 
         PassportAssessmentDecision assessmentDecision = passportAssessmentMapperHelper.mapAssessmentDecision(entity);

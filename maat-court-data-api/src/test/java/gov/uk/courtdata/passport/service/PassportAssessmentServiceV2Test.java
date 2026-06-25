@@ -65,7 +65,7 @@ class PassportAssessmentServiceV2Test {
     void whenFindByLegacyIdIsInvoked_thenPassportedAssessmentIsRetrieved() {
         var apiGetPassportedAssessmentResponse = TestModelDataBuilder.getApiGetPassportedAssessmentResponse();
         when(passportAssessmentPersistenceService.find(any()))
-                .thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity(null));
+                .thenReturn(TestEntityDataBuilder.getPassportAssessmentEntity());
         when(passportAssessmentMapper.toApiGetPassportedAssessmentResponse(any(PassportAssessmentEntity.class), any()))
                 .thenReturn(apiGetPassportedAssessmentResponse);
         var returnedPassportedAssessment = passportAssessmentService.find(LEGACY_PASSPORT_ASSESSMENT_ID);
@@ -77,7 +77,7 @@ class PassportAssessmentServiceV2Test {
         var request = TestModelDataBuilder.buildValidPopulatedCreatePassportedAssessmentRequest(
                 REP_ID, APPLICANT_ID, false, true);
         request.getPassportedAssessment().getDeclaredBenefit().setBenefitRecipient(BenefitRecipient.PARTNER);
-        var entity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        var entity = TestEntityDataBuilder.getPassportAssessmentEntity();
         var partner = TestEntityDataBuilder.getApplicant(APPLICANT_ID);
         var response = TestModelDataBuilder.buildValidCreatePassportedAssessmentResponse();
 
@@ -179,7 +179,7 @@ class PassportAssessmentServiceV2Test {
 
     @Test
     void givenAValidPassportAssessmentId_whenRollbackIsInvoked_thenPassportIsRolledBack() {
-        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         when(passportAssessmentPersistenceService.find(passportAssessmentEntity.getId()))
                 .thenReturn(passportAssessmentEntity);
 

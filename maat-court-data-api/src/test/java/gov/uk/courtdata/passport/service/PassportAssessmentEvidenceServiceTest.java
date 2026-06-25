@@ -148,7 +148,7 @@ class PassportAssessmentEvidenceServiceTest {
     }
 
     private void buildEntities() {
-        passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity(null);
+        passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
         Applicant applicant = Applicant.builder().id(APPLICANT_ID).build();
         Applicant partner = Applicant.builder().id(PARTNER_ID).build();
         passportAssessmentEntity.getRepOrder().setApplicationId(applicant.getId());

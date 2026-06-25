@@ -360,6 +360,10 @@ public class TestEntityDataBuilder {
         return getIOJAppealEntity(null, iapStatus, repId);
     }
 
+    public static PassportAssessmentEntity getPassportAssessmentEntity() {
+        return getPassportAssessmentEntity(null);
+    }
+    
     public static PassportAssessmentEntity getPassportAssessmentEntity(Integer repId) {
         return PassportAssessmentEntity.builder()
                 .id(TEST_ID)

@@ -81,6 +81,7 @@ jobs:
 
       - name: Notify Slack channel
         if: ${{ always() }}
+        continue-on-error: true
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -115,6 +116,7 @@ jobs:
 
       - name: Notify Slack channel
         if: ${{ always() }}
+        continue-on-error: true
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -149,6 +151,7 @@ jobs:
 
       - name: Notify Slack channel
         if: ${{ always() }}
+        continue-on-error: true
         uses: ./.github/actions/slack-notify-composite-action
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}

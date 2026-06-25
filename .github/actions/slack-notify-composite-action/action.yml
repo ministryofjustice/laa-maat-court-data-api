@@ -6,7 +6,7 @@ inputs:
     description: "The webhook URL of the Slack channel."
     required: true
   job-status:
-    description: "The calling jobs status."
+    description: "The status of the calling job."
     required: true
 
 runs:

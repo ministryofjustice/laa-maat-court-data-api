@@ -8,7 +8,9 @@ public enum LAAStatus {
     GRANTED_FOR_TWO_ADVOCATES("G2"),
     GRANTED_WITH_QC("GQ"),
     FAILED_ON_IOJ("FJ"),
-    FAILED_BOTH_IOJ_AND_MEANS("FB");
+    FAILED_BOTH_IOJ_AND_MEANS("FB"),
+
+    APPLICATION_PENDING("AP");
 
     private String value;
 
@@ -33,5 +35,9 @@ public enum LAAStatus {
             isGranted = true;
         }
         return isGranted;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

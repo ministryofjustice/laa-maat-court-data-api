@@ -61,7 +61,7 @@ public class PassportControllerV2IntegrationTest extends MockMvcIntegrationTest 
                 .andExpect(status().isOk());
 
         Optional<PassportAssessmentEntity> rolledBackPassportAssessmentEntity =
-                Optional.ofNullable(repos.passportAssessment.findByRepOrderId(repId));
+                Optional.ofNullable(repos.passportAssessment.findByRepOrderIdAndReplacedFalse(repId));
         assertThat(rolledBackPassportAssessmentEntity).isNotNull();
         assertThat(rolledBackPassportAssessmentEntity)
                 .hasValueSatisfying(passportAssessment ->

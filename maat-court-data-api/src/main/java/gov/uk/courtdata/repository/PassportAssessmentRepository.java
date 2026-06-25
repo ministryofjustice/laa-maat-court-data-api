@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface PassportAssessmentRepository
         extends JpaRepository<PassportAssessmentEntity, Integer>, JpaSpecificationExecutor<PassportAssessmentEntity> {
 
-    PassportAssessmentEntity findByRepOrderId(int repId);
+    PassportAssessmentEntity findByRepOrderIdAndReplacedFalse(int repId);
 
     @Modifying
     @Query(

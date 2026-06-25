@@ -3,7 +3,6 @@ package gov.uk.courtdata.passport.controller;
 import static gov.uk.courtdata.builder.TestModelDataBuilder.LEGACY_PASSPORT_ASSESSMENT_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -117,11 +116,11 @@ class PassportAssessmentControllerV2Test {
     }
 
     @Test
-    void givenAValidPassportAssessmentId_whenRollbackIsCalled_thenOkResponseIsReturned() throws Exception {
-        doNothing().when(passportAssessmentService).rollback(LEGACY_PASSPORT_ASSESSMENT_ID);
-
+    void givenAPassportAssessmentId_whenRollbackIsCalled_thenOkResponseIsReturned() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post(ROLLBACK_URL, LEGACY_PASSPORT_ASSESSMENT_ID))
                 .andExpect(status().isOk());
+
+        verify(passportAssessmentService).rollback(LEGACY_PASSPORT_ASSESSMENT_ID);
     }
 
     @Test

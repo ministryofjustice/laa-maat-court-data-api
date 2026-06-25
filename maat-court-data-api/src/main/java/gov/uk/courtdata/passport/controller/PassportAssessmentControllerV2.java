@@ -39,6 +39,7 @@ public class PassportAssessmentControllerV2 {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Create a passport assessment")
+    @StandardProblemDetailErrorResponse
     public ResponseEntity<ApiCreatePassportedAssessmentResponse> create(
             @Valid @RequestBody ApiCreatePassportedAssessmentRequest request) {
         log.info("Create Passported Assessment Request Received");

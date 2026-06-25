@@ -49,7 +49,7 @@ public class PassportAssessmentControllerV2 {
     @PostMapping(value = "/{id}/rollback", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Rollback an existing passport assessment record")
     @StandardProblemDetailErrorResponse
-    public ResponseEntity<ApiCreatePassportedAssessmentResponse> rollback(@PathVariable int id) {
+    public ResponseEntity<Void> rollback(@PathVariable int id) {
         log.info("Rollback Passported Assessment Request Received");
         passportAssessmentService.rollback(id);
         return ResponseEntity.ok().build();

@@ -50,7 +50,7 @@ public class PassportAssessmentControllerV2 {
     @Operation(description = "Rollback an existing passport assessment record")
     @StandardProblemDetailErrorResponse
     public ResponseEntity<Void> rollback(@PathVariable int id) {
-        log.info("Rollback Passported Assessment Request Received");
+        log.info("Rollback Passported Assessment Request Received for ID {}", id);
         passportAssessmentService.rollback(id);
         return ResponseEntity.ok().build();
     }

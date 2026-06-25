@@ -61,7 +61,7 @@ public class PassportControllerV2IntegrationTest extends MockMvcIntegrationTest 
                 .andExpect(status().isOk());
 
         PassportAssessmentEntity rolledBackPassportAssessmentEntity =
-            repos.passportAssessment.findByRepOrderIdAndReplacedFalse(repId);
+                repos.passportAssessment.findByRepOrderIdAndReplacedFalse(repId);
         assertThat(rolledBackPassportAssessmentEntity.getValid()).isFalse();
     }
 

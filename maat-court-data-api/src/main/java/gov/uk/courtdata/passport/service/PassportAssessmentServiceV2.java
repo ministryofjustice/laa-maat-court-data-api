@@ -56,6 +56,15 @@ public class PassportAssessmentServiceV2 {
         return passportAssessmentMapper.toApiCreatePassportedAssessmentResponse(entity);
     }
 
+    @Transactional
+    public void rollback(int passportAssessmentId) {
+        PassportAssessmentEntity passportAssessmentEntity =
+                passportAssessmentPersistenceService.find(passportAssessmentId);
+
+        passportAssessmentEntity.setValid(false);
+        passportAssessmentPersistenceService.save(passportAssessmentEntity);
+    }
+
     /**
      * Conditionally populate the partner fields on the PassportAssessmentEntity based on:
      * <ul>

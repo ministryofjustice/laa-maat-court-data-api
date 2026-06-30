@@ -176,4 +176,16 @@ class PassportAssessmentServiceV2Test {
         assertThat(entity.getPartnerNiNumber()).isEqualTo(expectedPartner.getNiNumber());
         assertThat(entity.getPartnerOtherNames()).isEqualTo(expectedPartner.getOtherNames());
     }
+
+    @Test
+    void givenAValidPassportAssessmentId_whenRollbackIsInvoked_thenPassportIsRolledBack() {
+        PassportAssessmentEntity passportAssessmentEntity = TestEntityDataBuilder.getPassportAssessmentEntity();
+        when(passportAssessmentPersistenceService.find(passportAssessmentEntity.getId()))
+                .thenReturn(passportAssessmentEntity);
+
+        passportAssessmentService.rollback(passportAssessmentEntity.getId());
+
+        assertThat(passportAssessmentEntity.getValid()).isEqualTo(false);
+        verify(passportAssessmentPersistenceService).save(any(PassportAssessmentEntity.class));
+    }
 }

@@ -361,9 +361,13 @@ public class TestEntityDataBuilder {
     }
 
     public static PassportAssessmentEntity getPassportAssessmentEntity() {
+        return getPassportAssessmentEntity(null);
+    }
+
+    public static PassportAssessmentEntity getPassportAssessmentEntity(Integer repId) {
         return PassportAssessmentEntity.builder()
                 .id(TEST_ID)
-                .repOrder(getPopulatedRepOrder(REP_ID))
+                .repOrder(getPopulatedRepOrder(Objects.isNull(repId) ? REP_ID : repId))
                 .nworCode("FMA")
                 .dateCreated(LocalDateTime.parse("2021-10-09T15:01:25"))
                 .userCreated(TEST_USER)
